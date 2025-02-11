@@ -20,6 +20,7 @@ public:
 
 protected:
 	virtual bool E_CheckOverlap(AActor* pTarget) override;
+	virtual bool E_CheckOverlap(AActor* pTarget) override;
 	virtual void E_OverlapEvent(AActor* pTarget) override;
 	virtual void E_On()  override;
 	virtual void E_Off() override;

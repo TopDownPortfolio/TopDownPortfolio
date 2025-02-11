@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "E_MontageID.h"
 #include "S_Montage.h"
 #include "C_MontageMGR.generated.h"
 //casting에는 결국 부하가 걸리긴한다.
@@ -19,7 +20,7 @@ protected:
 	FE_MontageID m_eCurrentID;
 	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
 	UDataTable* m_pDataTable;
-	bool m_bIsPlay;
+	bool m_bIsPlaying;
 	bool m_bCanPlay;
 	bool m_bIsInterruptable;
 public:	

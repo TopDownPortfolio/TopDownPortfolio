@@ -3,10 +3,10 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "E_Skill.h"
+#include "S_Skill.h"
 #include "C_SkillMGR.generated.h"
 
 class AA_Character_Base;
-struct FS_SkillData;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOPDOWNPORTFOLIO_API UC_SkillMGR : public UActorComponent
@@ -47,5 +47,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool E_PlayNextMontage();
 	UFUNCTION(BlueprintCallable)
-	void E_SetNextMontatge();
+	void E_SetNextMontage();
 };

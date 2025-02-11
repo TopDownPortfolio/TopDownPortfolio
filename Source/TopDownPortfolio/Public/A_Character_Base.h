@@ -2,16 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "C_BuffMGR.h"
+#include "C_StatusMGR.h"
+#include "C_AttackMGR.h"
+#include "C_MontageMGR.h"
+#include "E_State.h"
 #include "A_Character_Base.generated.h"
 
-class UC_MontageMGR;
-class UC_StatusMGR;
-class UC_AttackMGR;
 class UCapsuleComponent;
-class UC_BuffMGR;
-enum class FE_MontageID :uint8;
-enum class FE_SkillID :uint8;
-enum class FE_StateType : uint8;
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API AA_Character_Base : public ACharacter

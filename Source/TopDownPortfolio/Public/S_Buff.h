@@ -30,10 +30,10 @@ struct FS_BuffData_Status : public FS_BuffData
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	AA_Character_Base* pCharacter;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FE_StatusID eStatuID;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float fValuePerSecond;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float fRegenerationRate;
 };
 
 

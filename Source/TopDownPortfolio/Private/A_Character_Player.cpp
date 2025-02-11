@@ -4,15 +4,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/ChildActorComponent.h"
-#include "C_SkillMGR.h"
-#include "C_AttackMGR.h"
-#include "C_BuffMGR.h"
-#include "E_Status.h"
 #include "O_Buff_Status.h"
 
 
 AA_Character_Player::AA_Character_Player() :
-	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pWeaponR{}, m_pTarget{}, m_pSkillMGR{}
+	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pWeaponR{}, m_pTarget{}, m_pSkillMGR{}, m_sMp{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -60,22 +56,9 @@ void AA_Character_Player::BeginPlay()
 {
 	E_GetAttackMGR()->E_RegisterAttacker(0, m_pWeaponR->GetChildActor());
 	AA_Character_Base::BeginPlay();
-
-	FS_BuffData_Status status;
-	status.fValuePerSecond = 10.0f;
-	status.eStatuID = FE_StatusID::E_MP;
-	status.bLoop = true;
-	status.fInRate = 0.5f;
-	status.pCharacter = this;
-	m_pBuffMGR->E_StartBuff(UO_Buff_Status::StaticClass(), status);
-
-	/*status.fValuePerSecond = -2.0f;
-	status.eStatuID = FE_StatusID::E_HP;
-	status.bLoop = true;
-	status.fInRate = 0.5f;
-	status.nCount = 10;
-	status.pCharacter = this;
-	m_pBuffMGR->E_StartBuff(UO_Buff_Status::StaticClass(), status);*/
+	
+	m_sMp.pCharacter = this;
+	m_pBuffMGR->E_StartBuff(UO_Buff_Status::StaticClass(), m_sMp);
 }
 
 void AA_Character_Player::E_Init_Pawn()

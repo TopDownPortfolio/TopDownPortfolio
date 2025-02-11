@@ -62,7 +62,7 @@ void AA_Character_Player::BeginPlay()
 	AA_Character_Base::BeginPlay();
 
 	FS_BuffData_Status status;
-	status.fValuePerSecond = 1.0f;
+	status.fValuePerSecond = 10.0f;
 	status.eStatuID = FE_StatusID::E_MP;
 	status.bLoop = true;
 	status.fInRate = 0.5f;

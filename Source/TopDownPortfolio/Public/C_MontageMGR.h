@@ -19,6 +19,7 @@ protected:
 	FE_MontageID m_eCurrentID;
 	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
 	UDataTable* m_pDataTable;
+	bool m_bIsPlay;
 	bool m_bCanPlay;
 	bool m_bIsInterruptable;
 public:	

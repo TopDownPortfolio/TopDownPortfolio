@@ -67,8 +67,8 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 
 	if (m_sSrc.eSkillID == sDst.eSkillID)
 	{
-		sDst.nPlayIndex = m_sSrc.nPlayIndex;
-		sDst.nIndex = m_sSrc.nIndex;
+		//sDst.nPlayIndex = m_sSrc.nPlayIndex;
+		//sDst.nIndex = m_sSrc.nIndex;
 	}
 	bool bResult = pMontageMGR->E_CheckPlayable(eMontageID, sDst.nPlayIndex);
 	if (bResult && pStatusMGR->E_CheckAdd(eStatusID, fStatus))
@@ -89,9 +89,17 @@ bool UC_SkillMGR::E_PlayNextMontage()
 		return false;
 	pMontageMGR->E_SetMontageData(eMontageID, m_sSrc.nPlayIndex);
 	pMontageMGR->E_PlayMontage();
+	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num() - 1)
+	{
+		m_sSrc.eSkillID = FE_SkillID::E_NONE;
+	}
+	return true;
+}
+
+void UC_SkillMGR::E_SetNextMontatge()
+{
 	m_sSrc.nIndex++;
 	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num())
 		m_sSrc.nIndex = 0;
 	m_sSrc.nPlayIndex = m_arIndex[m_sSrc.nSkillIndex][m_sSrc.nIndex];
-	return true;
 }

@@ -46,4 +46,6 @@ public:
 	bool E_Action(FE_SkillID eID);
 	UFUNCTION(BlueprintCallable)
 	bool E_PlayNextMontage();
+	UFUNCTION(BlueprintCallable)
+	void E_SetNextMontatge();
 };

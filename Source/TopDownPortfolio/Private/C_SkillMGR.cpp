@@ -1,15 +1,15 @@
 #include "C_SkillMGR.h"
 #include "A_Character_Base.h"
 #include "D_DataTable.h"
+#include "C_MontageMGR.h"
+#include "C_StatusMGR.h"
 
 UC_SkillMGR::UC_SkillMGR() :
 	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}
 {
 	PrimaryComponentTick.bCanEverTick  = false;
-	//D_DataTable cData{};
-	//m_pDataTable = cData.E_Default_Skiil();
-	
-	
+	D_DataTable cData{};
+	m_pDataTable = cData.E_Default_Skiil();
 }
 
 
@@ -55,7 +55,7 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	S_CurrentData sDst{};
 	sDst.eSkillID = eID;
 	sDst.nSkillIndex = (uint8)sDst.eSkillID;
-	if (!m_arSkillData[sDst.nSkillIndex])
+	if (m_arSkillData.Num() <= sDst.nSkillIndex || !m_arSkillData[sDst.nSkillIndex])
 		return false;
 	FE_MontageID eMontageID = m_arSkillData[sDst.nSkillIndex]->eMontageID;
 	FE_StatusID eStatusID = FE_StatusID::E_MP;

@@ -2,12 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "A_Character_Base.h"
-#include "C_SkillMGR.h"
+#include "S_Buff.h"
 #include "A_Character_Player.generated.h"
 
+class UC_SkillMGR;
 class UCameraComponent;
 class USpringArmComponent;
 class UChildActorComponent;
+struct FS_BuffData_Status;
+
+enum class FE_SkillID :uint8;
 
 UCLASS(Blueprintable)
 class AA_Character_Player : public AA_Character_Base

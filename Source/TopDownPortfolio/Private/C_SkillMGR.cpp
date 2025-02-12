@@ -1,10 +1,6 @@
 #include "C_SkillMGR.h"
 #include "A_Character_Base.h"
-#include "S_Skill.h"
 #include "D_DataTable.h"
-#include "C_MontageMGR.h"
-#include "C_StatusMGR.h"
-#include "E_State.h"
 
 UC_SkillMGR::UC_SkillMGR() :
 	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}
@@ -26,6 +22,8 @@ void UC_SkillMGR::BeginPlay()
 		DestroyComponent();
 		return;
 	}
+
+	// TODO : 아래의 m_arIndex 설정은 임시 이고 추후 Interaction 추가
 	m_arIndex[0].Init(0, 1);
 	m_arIndex[1].Init(0, 4);
 	m_arIndex[1][0] = 0; 
@@ -65,11 +63,12 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	UC_MontageMGR* pMontageMGR = m_pOwner->E_GetMontageMGR();
 	UC_StatusMGR* pStatusMGR= m_pOwner->E_GetStatusMGR();
 
-	if (m_sSrc.eSkillID == sDst.eSkillID)
-	{
-		sDst.nPlayIndex = m_sSrc.nPlayIndex;
-		sDst.nIndex = m_sSrc.nIndex;
-	}
+	// TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
+	//if (m_sSrc.eSkillID == sDst.eSkillID)
+	//{
+	//	sDst.nPlayIndex = m_sSrc.nPlayIndex;
+	//	sDst.nIndex = m_sSrc.nIndex;
+	//}
 	bool bResult = pMontageMGR->E_CheckPlayable(eMontageID, sDst.nPlayIndex);
 	if (bResult && pStatusMGR->E_CheckAdd(eStatusID, fStatus))
 	{
@@ -89,9 +88,19 @@ bool UC_SkillMGR::E_PlayNextMontage()
 		return false;
 	pMontageMGR->E_SetMontageData(eMontageID, m_sSrc.nPlayIndex);
 	pMontageMGR->E_PlayMontage();
+	// 아래 if는 버그 fix를 위한 임시
+	// TODO : 따로 함수로 둬서 호출하게 할지 SetNext에 포함 시킬지 고민
+	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num() - 1)
+	{
+		m_sSrc.eSkillID = FE_SkillID::E_NONE;
+	}
+	return true;
+}
+
+void UC_SkillMGR::E_SetNextMontage()
+{
 	m_sSrc.nIndex++;
 	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num())
 		m_sSrc.nIndex = 0;
 	m_sSrc.nPlayIndex = m_arIndex[m_sSrc.nSkillIndex][m_sSrc.nIndex];
-	return true;
 }

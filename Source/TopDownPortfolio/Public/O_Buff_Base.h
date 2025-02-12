@@ -37,3 +37,12 @@ public:
 	void E_UnRegister();
 };
 	
+/* 버프 예시
+* FS_BuffData_Status status;
+	status.fValuePerSecond = -2.0f;
+	status.eStatuID = FE_StatusID::E_HP;
+	status.bLoop = true;
+	status.fInRate = 0.5f;
+	status.nCount = 10;
+	status.pCharacter = this;
+	m_pBuffMGR->E_StartBuff(UO_Buff_Status::StaticClass(), status);*/

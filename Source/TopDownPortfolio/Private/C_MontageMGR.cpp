@@ -5,7 +5,7 @@
 #include "D_DataTable.h"
 
 UC_MontageMGR::UC_MontageMGR() : 
-	UActorComponent{}, m_arMontageData{}, m_pInstance{}, m_pCurrentData{}, m_sPlayData{}, m_eCurrentID{}, m_pDataTable{}, m_bCanPlay {}, m_bIsInterruptable{}
+	UActorComponent{}, m_arMontageData{}, m_pInstance{}, m_pCurrentData{}, m_sPlayData{}, m_eCurrentID{}, m_pDataTable{}, m_bIsPlaying{}, m_bCanPlay {}, m_bIsInterruptable{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	D_DataTable cData{};
@@ -51,12 +51,14 @@ FS_MontageData* UC_MontageMGR::E_GetMontageData(FE_MontageID eID, int nIndex)
 void UC_MontageMGR::E_Started(UAnimMontage* pMontage)
 {
 	m_bCanPlay = false;
+	m_bIsPlaying = true;
 }
 
 void UC_MontageMGR::E_Ended(UAnimMontage* pMontage, bool bInterrupted)
 {
 	m_bIsInterruptable = bInterrupted;
 	m_pCurrentData = nullptr;
+	m_bIsPlaying = m_bIsInterruptable;
 }
 
 void UC_MontageMGR::E_BlendingOutStarted(UAnimMontage* pMontage, bool bInterrupted)
@@ -94,12 +96,12 @@ bool UC_MontageMGR::E_Play(FE_MontageID eID, int nIndex)
 bool UC_MontageMGR::E_CheckPlayable(FE_MontageID eID, int nIndex)
 {
 	FS_MontageData* pDst = E_GetMontageData(eID, nIndex);
-	if (pDst == nullptr  || m_pInstance == nullptr)
-		return false;
-	bool bResult = m_pCurrentData == nullptr;
-	if (bResult || m_bCanPlay)
-		return true;
-	return m_pCurrentData->nIndex < pDst->nIndex;
+	bool bResult = m_pCurrentData && pDst && m_pCurrentData->nIndex < pDst->nIndex;
+	if (m_bCanPlay || m_pCurrentData == nullptr)
+		bResult = true;
+	if (pDst == nullptr || m_pInstance == nullptr || m_bIsPlaying)
+		bResult = false;
+	return bResult;
 }
 
 void UC_MontageMGR::E_PlayMontage_Implementation()

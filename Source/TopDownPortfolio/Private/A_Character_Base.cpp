@@ -1,13 +1,9 @@
 #include "A_Character_Base.h"
 #include "Engine/DamageEvents.h"
-#include "C_StatusMGR.h"
-#include "C_AttackMGR.h"
-#include "C_MontageMGR.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "C_BuffMGR.h"
 #include "E_State.h"
 
 AA_Character_Base::AA_Character_Base() :

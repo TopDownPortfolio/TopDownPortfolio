@@ -2,12 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "A_Character_Base.h"
+#include "C_SkillMGR.h"
 #include "A_Character_Player.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UChildActorComponent;
-class UC_SkillMGR;
 
 UCLASS(Blueprintable)
 class AA_Character_Player : public AA_Character_Base
@@ -27,6 +27,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
 	UC_SkillMGR* m_pSkillMGR;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
+	FS_BuffData_Status m_sMp;
 public:
 	AA_Character_Player();
 	FORCEINLINE UCameraComponent* GetTopDownCameraComponent() const { return m_pCameraComponent; }

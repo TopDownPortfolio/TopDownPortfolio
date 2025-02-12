@@ -15,7 +15,7 @@ void UO_Buff_Status::E_SetBuffData(FS_BuffData const& sData)
 	{
 		m_pOwner = pStatus->pCharacter;
 		m_eStatuID = pStatus->eStatuID;
-		m_fValuePerSecond = pStatus->fValuePerSecond;
+		m_fValuePerSecond = pStatus->fRegenerationRate;
 	}
 }
 

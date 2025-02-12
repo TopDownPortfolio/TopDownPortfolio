@@ -4,7 +4,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "E_State.h"
+#include "C_BuffMGR.h"
+#include "C_StatusMGR.h"
+#include "C_AttackMGR.h"
+#include "C_MontageMGR.h"
 
 AA_Character_Base::AA_Character_Base() :
 	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_eState{}, m_arHideBone {}

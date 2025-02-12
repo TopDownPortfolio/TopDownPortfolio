@@ -26,18 +26,18 @@ void UC_SkillMGR::BeginPlay()
 	// TODO : 아래의 m_arIndex 설정은 임시 이고 추후 Interaction 추가
 	m_arIndex[0].Init(0, 1);
 	m_arIndex[1].Init(0, 4);
-	m_arIndex[1][0] = 0; 
 	m_arIndex[1][1] = 1; 
 	m_arIndex[1][2] = 2; 
 	m_arIndex[1][3] = 3; 
-	m_arIndex[2].Init(0, 3);
-	m_arIndex[2][0] = 0;
+	m_arIndex[2].Init(0, 4);
 	m_arIndex[2][1] = 1;
-	m_arIndex[2][2] = 5;
-	m_arIndex[3].Init(0, 3);
-	m_arIndex[3][0] = 0;
+	m_arIndex[2][2] = 2;
+	m_arIndex[2][3] = 4;
+	m_arIndex[3].Init(0, 4);
 	m_arIndex[3][1] = 1;
-	m_arIndex[3][2] = 6;
+	m_arIndex[3][2] = 2;
+	m_arIndex[3][3] = 4;
+	//m_arIndex[3][3] = 3;
 	if (m_pDataTable)
 	{
 		TArray< FS_SkillData*> arData{};
@@ -88,19 +88,14 @@ bool UC_SkillMGR::E_PlayNextMontage()
 		return false;
 	pMontageMGR->E_SetMontageData(eMontageID, m_sSrc.nPlayIndex);
 	pMontageMGR->E_PlayMontage();
-	// 아래 if는 버그 fix를 위한 임시
-	// TODO : 따로 함수로 둬서 호출하게 할지 SetNext에 포함 시킬지 고민
-	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num() - 1)
-	{
-		m_sSrc.eSkillID = FE_SkillID::E_NONE;
-	}
 	return true;
 }
 
-void UC_SkillMGR::E_SetNextMontage()
+bool UC_SkillMGR::E_SetNextMontage()
 {
 	m_sSrc.nIndex++;
 	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num())
 		m_sSrc.nIndex = 0;
 	m_sSrc.nPlayIndex = m_arIndex[m_sSrc.nSkillIndex][m_sSrc.nIndex];
+	return m_sSrc.nIndex != 0;
 }

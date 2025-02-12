@@ -27,13 +27,9 @@ void UC_BuffMGR::E_StartBuff(FS_BuffData const& sData)
 
 TSubclassOf<UO_Buff_Base> UC_BuffMGR::E_GetStaticClass(FE_BuffID eID)
 {
-	TSubclassOf<UO_Buff_Base> pResult = UO_Buff_Base::StaticClass();
-	switch (eID)
-	{
-	case FE_BuffID::E_Status:
-		pResult = UO_Buff_Status::StaticClass();
-		break;
-	}
-	return pResult;
+	TSubclassOf<UO_Buff_Base> arClass[(uint8)FE_BuffID::E_EnumMAX]{};
+	arClass[(uint8)FE_BuffID::E_NONE]		= UO_Buff_Base::StaticClass();
+	arClass[(uint8)FE_BuffID::E_Status]		= UO_Buff_Status::StaticClass();
+	return arClass[(uint8)eID] ? arClass[(uint8)eID] : arClass[(uint8)FE_BuffID::E_NONE];
 }
 

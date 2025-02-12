@@ -2,14 +2,19 @@
 
 #include "CoreMinimal.h"
 #include "Engine/UserDefinedStruct.h"
+#include "E_Buff.h"
 #include "S_Buff.generated.h"
-
 
 USTRUCT(BlueprintType)
 struct FS_BuffData
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	FS_BuffData() = default;
+	virtual ~FS_BuffData() = default;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FE_BuffID eBuffID = FE_BuffID::E_Base;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fInRate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -33,7 +38,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FE_StatusID eStatuID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float fRegenerationRate;
+	float fRegenerationRatePerSecond;
 };
 
 
@@ -42,5 +47,8 @@ UCLASS(Abstract)
 class TOPDOWNPORTFOLIO_API US_Buff : public UUserDefinedStruct
 {
 	GENERATED_BODY()
+
+private:
+	US_Buff() {};
 	
 };

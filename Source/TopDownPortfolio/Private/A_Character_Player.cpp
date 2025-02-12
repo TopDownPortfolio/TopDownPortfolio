@@ -4,8 +4,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/ChildActorComponent.h"
-#include "O_Buff_Status.h"
-
+#include "C_BuffMGR.h"
+#include "C_StatusMGR.h"
+#include "C_AttackMGR.h"
+#include "C_MontageMGR.h"
+#include "C_SkillMGR.h"
 
 AA_Character_Player::AA_Character_Player() :
 	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pWeaponR{}, m_pTarget{}, m_pSkillMGR{}, m_sMp{}
@@ -57,8 +60,10 @@ void AA_Character_Player::BeginPlay()
 	E_GetAttackMGR()->E_RegisterAttacker(0, m_pWeaponR->GetChildActor());
 	AA_Character_Base::BeginPlay();
 	
+	m_sMp.eBuffID = FE_BuffID::E_Status;
 	m_sMp.pCharacter = this;
-	m_pBuffMGR->E_StartBuff(UO_Buff_Status::StaticClass(), m_sMp);
+	if (m_pBuffMGR)
+		m_pBuffMGR->E_StartBuff(m_sMp);
 }
 
 void AA_Character_Player::E_Init_Pawn()

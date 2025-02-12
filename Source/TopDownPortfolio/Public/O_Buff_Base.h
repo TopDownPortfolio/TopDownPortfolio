@@ -35,6 +35,8 @@ public:
 	virtual void E_SetBuffData(FS_BuffData const& sData) { E_SetDefault(sData); }
 	void E_Register();
 	void E_UnRegister();
+
+
 };
 	
 /* 버프 예시

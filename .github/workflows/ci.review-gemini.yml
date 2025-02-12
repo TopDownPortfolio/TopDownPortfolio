@@ -13,7 +13,7 @@ jobs:
       - name: Run Gemini AI Review
         uses: ablil/gemini-code-review@v0.5.12
         with:
-          extra_prompt: "This is a game development project using Unreal engine. Your review must be written in Korean. Do not review about variable names. Do not review changes to '#include *'."
+          extra_prompt: "Your review must be written in Korean. Skip review about names. Skip review about header files."
           exclude_filenames: "**/*.md, Content/**/*"
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -47,5 +47,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool E_PlayNextMontage();
 	UFUNCTION(BlueprintCallable)
-	void E_SetNextMontage();
+	bool E_SetNextMontage();
 };

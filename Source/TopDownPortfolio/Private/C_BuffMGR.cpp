@@ -1,5 +1,6 @@
 #include "C_BuffMGR.h"
 #include "O_Buff_Base.h"
+#include "O_Buff_Status.h"
 
 UC_BuffMGR::UC_BuffMGR() :
 	UActorComponent{}
@@ -12,8 +13,9 @@ void UC_BuffMGR::BeginPlay()
 	UActorComponent::BeginPlay();
 }
 
-void UC_BuffMGR::E_StartBuff(TSubclassOf<UO_Buff_Base> cBuff, FS_BuffData const& sData)
+void UC_BuffMGR::E_StartBuff(FS_BuffData const& sData)
 {
+	TSubclassOf<UO_Buff_Base> cBuff = E_GetStaticClass(sData.eBuffID);
 	UO_Buff_Base* pBuff = NewObject< UO_Buff_Base>(this, cBuff);
 	if (pBuff)
 	{
@@ -21,5 +23,17 @@ void UC_BuffMGR::E_StartBuff(TSubclassOf<UO_Buff_Base> cBuff, FS_BuffData const&
 		pBuff->E_SetBuffData(sData);
 		pBuff->E_Register();
 	}
+}
+
+TSubclassOf<UO_Buff_Base> UC_BuffMGR::E_GetStaticClass(FE_BuffID eID)
+{
+	TSubclassOf<UO_Buff_Base> pResult = UO_Buff_Base::StaticClass();
+	switch (eID)
+	{
+	case FE_BuffID::E_Status:
+		pResult = UO_Buff_Status::StaticClass();
+		break;
+	}
+	return pResult;
 }
 

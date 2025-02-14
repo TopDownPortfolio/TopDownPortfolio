@@ -1,13 +1,15 @@
 #include "C_WidgetMGR.h"
 #include "GameFramework/PlayerController.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 
 UC_WidgetMGR::UC_WidgetMGR() :
-	UActorComponent{}, m_pController{}, m_cMain{}, m_setWidget{}, m_pMain{}
+	UActorComponent{}, m_pController{}, m_cMain{}, m_mapWidget{}, m_pMain{}, m_mapWindow{}, m_arWidgetData{}, m_nOpenWidgetCount{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_setWidget.Reserve(20);
+	m_mapWidget.Reserve(20);
 
 	ConstructorHelpers::FClassFinder<UUserWidget> ObejctFind(TEXT("/Game/01_Blueprint/Widget/W-Main"));
 	// /Script/UMGEditor.WidgetBlueprint'/Game/01_Blueprint/Widget/W-Main.W-Main'
@@ -30,9 +32,6 @@ void UC_WidgetMGR::BeginPlay()
 	{
 		m_pMain = CreateWidget(m_pController, m_cMain);
 		m_pMain->AddToViewport();
-		//m_pMain->Slot->
-		//UPanelWidget
-		//m_pMain->GetRootWidget
 	}
 }
 
@@ -40,19 +39,58 @@ void UC_WidgetMGR::E_Add(UUserWidget* pWidget)
 {
 	if (!m_pMain)
 		return;
-
+	m_mapWidget.Add(pWidget);
 }
 
 void UC_WidgetMGR::E_Remove(UUserWidget* pWidget)
 {
+	m_mapWidget.Remove(pWidget);
 }
 
-void UC_WidgetMGR::E_AddWidget(UUserWidget* pWidget)
+UPanelWidget* UC_WidgetMGR::E_GetMainPannel()
 {
-	m_setWidget.Add(pWidget);
+	return Cast<UPanelWidget>(m_pMain->WidgetTree->RootWidget);
 }
 
-void UC_WidgetMGR::E_RemoveWidget(UUserWidget* pWidget)
+void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eID)
 {
-	m_setWidget.Remove(pWidget);
+	TSubclassOf<UUserWidget>* pcWidget = m_mapWindow.Find(eID);
+	if (!pcWidget || m_arWidgetData[(uint8)eID].pWidget)
+		return;
+	m_nOpenWidgetCount++;
+	if (m_nOpenWidgetCount == 1)
+	{
+		//UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(m_pController, m_pMain);
+		m_pController->StopMovement();
+	}
+	UUserWidget* pWidget = E_RegisterWidget(*pcWidget);
+	m_arWidgetData[(uint8)eID].pWidget = pWidget;
+	m_mapWidget.Add({ pWidget, &m_arWidgetData[(uint8)eID] });
+}
+
+UUserWidget* UC_WidgetMGR::E_RegisterWidget(TSubclassOf<UUserWidget> cWidget)
+{
+	UUserWidget* pWidget = CreateWidget(m_pController, cWidget);
+	UPanelWidget* pMain = E_GetMainPannel();
+	if (pMain)
+		pMain->AddChild(pWidget);
+	return pWidget;
+}
+
+void UC_WidgetMGR::E_UnRegisterWidget(UUserWidget* pWidget)
+{
+	UPanelWidget* pMain = E_GetMainPannel();
+	m_nOpenWidgetCount--;
+	if (m_nOpenWidgetCount == 0)
+	{
+		//UWidgetBlueprintLibrary::SetInputMode_GameOnly(m_pController);
+	}
+	if (pMain)
+		pMain->RemoveChild(pWidget);
+	pWidget->RemoveFromParent();
+	(*m_mapWidget.Find(pWidget))->pWidget = nullptr;
+	m_mapWidget.Remove(pWidget);
+	pWidget->MarkAsGarbage();
+	//CollectGarbage();
+
 }

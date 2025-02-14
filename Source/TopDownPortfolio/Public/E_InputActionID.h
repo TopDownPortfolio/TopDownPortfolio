@@ -11,6 +11,7 @@ enum class FE_InputActionID : uint8
 	E_Q,
 	E_W,
 	E_E,
+	E_SkillWindow,
 	E_EnumMAX  UMETA(Hidden)
 };
 

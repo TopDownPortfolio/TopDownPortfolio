@@ -11,9 +11,6 @@ enum class FE_BuffID : uint8
 	E_EnumMAX UMETA(Hidden),
 };
 
-
-
-
 class TOPDOWNPORTFOLIO_API E_Buff
 {
 private:

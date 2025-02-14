@@ -56,14 +56,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void E_SubState(FE_StateType eEnum);
 	void E_SubState(uint8 eValue) { E_SubState((FE_StateType)eValue); }
-	// or로 추가 and로 확인 xor 로 제거
-	// 주의 : xor를 잘못 사용하면 추가가 되버림 if로 확인하는걸 추천
 
 	virtual bool ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const override;
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	void E_Action(FE_SkillID eID);
-	virtual void E_Action_Implementation(FE_SkillID eID);
-
 	virtual void E_Attack(AA_Character_Base* pTarget);
 	virtual void E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser);
 	UFUNCTION(BlueprintPure)

@@ -13,6 +13,7 @@ class TOPDOWNPORTFOLIO_API UC_SkillMGR : public UActorComponent
 {
 	GENERATED_BODY()
 protected:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDL_OnAction, FE_SkillID, eSkillID, bool, bIsActionActive);
 	struct S_CurrentData
 	{
 		FE_SkillID eSkillID;
@@ -48,4 +49,7 @@ public:
 	bool E_PlayNextMontage();
 	UFUNCTION(BlueprintCallable)
 	bool E_SetNextMontage();
+
+	UPROPERTY(BlueprintAssignable)
+	FDL_OnAction On_ActionActive;
 };

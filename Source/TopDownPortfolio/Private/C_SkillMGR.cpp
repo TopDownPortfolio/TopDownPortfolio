@@ -1,11 +1,12 @@
 #include "C_SkillMGR.h"
+#include "A_PlayerController.h"
 #include "A_Character_Base.h"
 #include "D_DataTable.h"
 #include "C_MontageMGR.h"
 #include "C_StatusMGR.h"
 
 UC_SkillMGR::UC_SkillMGR() :
-	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}
+	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}, On_ActionActive{}	
 {
 	PrimaryComponentTick.bCanEverTick  = false;
 	D_DataTable cData{};
@@ -16,13 +17,14 @@ UC_SkillMGR::UC_SkillMGR() :
 void UC_SkillMGR::BeginPlay()
 {
 	UActorComponent::BeginPlay();
-	m_pOwner = Cast<AA_Character_Base> (GetOwner());
-	if (!m_pOwner)
+	AA_PlayerController* pController = Cast<AA_PlayerController>(GetOwner());
+	if (!pController || pController->AcknowledgedPawn == nullptr)
 	{
 		DestroyComponent();
 		return;
 	}
 
+	m_pOwner = Cast<AA_Character_Base>(pController->AcknowledgedPawn);
 	// TODO : 아래의 m_arIndex 설정은 임시 이고 추후 Interaction 추가
 	m_arIndex[0].Init(0, 1);
 	m_arIndex[1].Init(0, 4);
@@ -76,6 +78,10 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 		m_pOwner->E_SubState(FE_StateType::E_IsTravel);
 		pStatusMGR->E_AddStatus_Current(eStatusID, fStatus);
 		E_PlayNextMontage();
+	}
+	if (On_ActionActive.IsBound())
+	{
+		On_ActionActive.Broadcast(sDst.eSkillID, bResult);
 	}
 	return bResult;
 }

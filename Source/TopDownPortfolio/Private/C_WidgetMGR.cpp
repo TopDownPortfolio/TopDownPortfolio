@@ -6,16 +6,16 @@
 
 
 UC_WidgetMGR::UC_WidgetMGR() :
-	UActorComponent{}, m_pController{}, m_cMain{}, m_mapWidget{}, m_pMain{}, m_mapWindow{}, m_arWidgetData{}, m_nOpenWidgetCount{}
+	UActorComponent{}, m_pController{}, m_cMain{}, m_pMain{}, m_pMainPanel{} , m_mapWindow{}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_mapWidget.Reserve(20);
 
 	ConstructorHelpers::FClassFinder<UUserWidget> ObejctFind(TEXT("/Game/01_Blueprint/Widget/W-Main"));
-	// /Script/UMGEditor.WidgetBlueprint'/Game/01_Blueprint/Widget/W-Main.W-Main'
+	// /Script/UMGEditor.WidgetBlueprint'/Game/01_Blueprint/Widgm_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
 
 	if (ObejctFind.Succeeded())
 		m_cMain = ObejctFind.Class;
+	m_nStackCount = -1;
 }
 
 
@@ -30,67 +30,73 @@ void UC_WidgetMGR::BeginPlay()
 	}
 	if (m_cMain)
 	{
-		m_pMain = CreateWidget(m_pController, m_cMain);
+		m_pMain = E_CreateWidget(m_cMain);
 		m_pMain->AddToViewport();
 	}
-}
-
-void UC_WidgetMGR::E_Add(UUserWidget* pWidget)
-{
-	if (!m_pMain)
-		return;
-	m_mapWidget.Add(pWidget);
-}
-
-void UC_WidgetMGR::E_Remove(UUserWidget* pWidget)
-{
-	m_mapWidget.Remove(pWidget);
-}
-
-UPanelWidget* UC_WidgetMGR::E_GetMainPannel()
-{
-	return Cast<UPanelWidget>(m_pMain->WidgetTree->RootWidget);
-}
-
-void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eID)
-{
-	TSubclassOf<UUserWidget>* pcWidget = m_mapWindow.Find(eID);
-	if (!pcWidget || m_arWidgetData[(uint8)eID].pWidget)
-		return;
-	m_nOpenWidgetCount++;
-	if (m_nOpenWidgetCount == 1)
+	for (uint8 i = (uint8)FE_WindowID::E_NONE + 1; i < (uint8)FE_WindowID::E_EnumMAX; i++)
 	{
-		//UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(m_pController, m_pMain);
-		m_pController->StopMovement();
+		FE_WindowID eWindowID = (FE_WindowID)i;
+		TSubclassOf<UUserWidget>* pcWidget = m_mapWindow.Find(eWindowID);
+		if (pcWidget)
+			m_arWidgetData[i].pWidget = E_CreateWidget(*pcWidget);
 	}
-	UUserWidget* pWidget = E_RegisterWidget(*pcWidget);
-	m_arWidgetData[(uint8)eID].pWidget = pWidget;
-	m_mapWidget.Add({ pWidget, &m_arWidgetData[(uint8)eID] });
+}
+UPanelWidget* UC_WidgetMGR::E_GetMainPanel()
+{
+	if (!m_pMainPanel)
+		m_pMainPanel = Cast<UPanelWidget>(m_pMain->WidgetTree->RootWidget);
+	return m_pMainPanel;
 }
 
-UUserWidget* UC_WidgetMGR::E_RegisterWidget(TSubclassOf<UUserWidget> cWidget)
+UUserWidget* UC_WidgetMGR::E_CreateWidget(TSubclassOf<UUserWidget> cWidget)
 {
-	UUserWidget* pWidget = CreateWidget(m_pController, cWidget);
-	UPanelWidget* pMain = E_GetMainPannel();
-	if (pMain)
-		pMain->AddChild(pWidget);
-	return pWidget;
+	return CreateWidget(m_pController, cWidget);
 }
 
-void UC_WidgetMGR::E_UnRegisterWidget(UUserWidget* pWidget)
+bool UC_WidgetMGR::E_CheckWindow(FE_WindowID eWindowID)
 {
-	UPanelWidget* pMain = E_GetMainPannel();
-	m_nOpenWidgetCount--;
-	if (m_nOpenWidgetCount == 0)
-	{
-		//UWidgetBlueprintLibrary::SetInputMode_GameOnly(m_pController);
-	}
-	if (pMain)
-		pMain->RemoveChild(pWidget);
-	pWidget->RemoveFromParent();
-	(*m_mapWidget.Find(pWidget))->pWidget = nullptr;
-	m_mapWidget.Remove(pWidget);
-	pWidget->MarkAsGarbage();
-	//CollectGarbage();
+	return m_arWidgetData[(uint8)eWindowID].pWidget != nullptr;
+}
 
+void UC_WidgetMGR::E_Register(FE_WindowID eWindowID, UUserWidget* pWidget)
+{
+	m_arWidgetData[(uint8)eWindowID].pWidget = pWidget;
+}
+
+void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eWindowID)
+{
+	if (m_nStackCount == (uint8)FE_WindowID::E_EnumMAX || !E_CheckWindow(eWindowID))
+		return;
+	UUserWidget* pRefWidget = m_arWidgetData[(uint8)eWindowID].pWidget;
+	E_Register(eWindowID, pRefWidget);
+	E_AddWidget(pRefWidget);
+	m_nStackCount++;
+	m_arWidgetStack[m_nStackCount] = eWindowID;
+}
+
+void UC_WidgetMGR::E_UnRegisterWidget()
+{
+	if (m_nStackCount < 0)
+		return;
+	FE_WindowID eWindowID = m_arWidgetStack[m_nStackCount];
+	UUserWidget* pWidget = m_arWidgetData[(uint8)eWindowID].pWidget;
+	E_RemoveWidget(pWidget);
+	m_nStackCount--;
+	/* 함수 리뉴얼 과정에서 잠시 보류 중인 코드
+	pWidget->MarkAsGarbage(); => endplay?
+	*/
+}
+
+void UC_WidgetMGR::E_AddWidget(UUserWidget* pWidget)
+{
+	UPanelWidget* pMain = E_GetMainPanel();
+	pMain->AddChild(pWidget);
+}
+
+void UC_WidgetMGR::E_RemoveWidget(UUserWidget* pWidget)
+{
+	UPanelWidget* pMain = E_GetMainPanel();
+	pMain->RemoveChild(pWidget);
+	if (pWidget)
+		pWidget->RemoveFromParent();
 }

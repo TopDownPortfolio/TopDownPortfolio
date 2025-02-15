@@ -18,35 +18,36 @@ protected:
 	struct S_WidgetData
 	{
 		UUserWidget* pWidget;
-
 	};
 private:
 	APlayerController* m_pController;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-
 	TSubclassOf< UUserWidget> m_cMain;
-	TMap<UUserWidget*, S_WidgetData*> m_mapWidget;
 	UUserWidget* m_pMain;
-
+	UPanelWidget* m_pMainPanel;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TMap<FE_WindowID, TSubclassOf<UUserWidget>> m_mapWindow;
 	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
-	int m_nOpenWidgetCount;
+	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
+	int m_nStackCount;
 public:	
 	UC_WidgetMGR();
 
 protected:
 	virtual void BeginPlay() override;
 
-	void E_Add(UUserWidget* pWidget);
-	void E_Remove(UUserWidget* pWidget);
+	UPanelWidget* E_GetMainPanel();
+	UUserWidget* E_CreateWidget(TSubclassOf<UUserWidget> cWidget);
 
-	UPanelWidget* E_GetMainPannel();
+	bool E_CheckWindow(FE_WindowID eWindowID);
+	void E_Register(FE_WindowID eWindowID, UUserWidget* pWidget);
+
 public:	
-	void E_RegisterWidget(FE_WindowID eID);
+	void E_RegisterWidget(FE_WindowID eWindowID);
+	void E_UnRegisterWidget();
 
 	UFUNCTION(BlueprintCallable)
-	UUserWidget* E_RegisterWidget(TSubclassOf<UUserWidget> cWidget);
+	void E_AddWidget(UUserWidget* pWidget);
 	UFUNCTION(BlueprintCallable)
-	void E_UnRegisterWidget(UUserWidget* pWidget);
+	void E_RemoveWidget(UUserWidget* pWidget);
 };

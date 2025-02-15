@@ -18,5 +18,5 @@ private:
 public:
 	UO_InputAction_Widget();
 public:
-	virtual void E_Started(const FInputActionValue& fInputValue) override;
+	virtual void E_Completed(const FInputActionValue& fInputValue) override;
 };

@@ -67,6 +67,4 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UC_StatusMGR* E_GetStatusMGR() { return m_pStatusMGR; }
-
-	// E_Action_Implementation Controller∑Œ ¿Ã¿¸
 };

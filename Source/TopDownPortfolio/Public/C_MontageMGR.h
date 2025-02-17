@@ -44,7 +44,7 @@ protected:
 public:	
 	//void E_SetMontageData(TArray< FS_MontageData*>* arMontageData) { m_arMontageData = arMontageData; }
 	UFUNCTION(BlueprintCallable, Category = SetData)
-	void E_SetMontageData(FE_MontageID eID, int nIndex)
+	void E_SetMontageData(FE_MontageID eID, int nIndex = 0)
 	{
 		m_eCurrentID = eID;
 		m_pCurrentData = E_GetMontageData(m_eCurrentID, nIndex);
@@ -56,10 +56,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = SetData)
 	void E_SetCanPlay(bool bValue) { m_bCanPlay = bValue; }
 	UFUNCTION(BlueprintCallable, Category = Play)
-	bool E_Play(FE_MontageID eID, int nIndex);
+	bool E_Play(FE_MontageID eID, int nIndex = 0);
 		
 	UFUNCTION(BlueprintPure)
-	bool E_CheckPlayable(FE_MontageID eID, int nIndex);
+	bool E_CheckPlayable(FE_MontageID eID, int nIndex = 0);
 	UFUNCTION(BlueprintCallable, Category = Play, NetMulticast, Reliable)
 	void E_PlayMontage();
 	void E_PlayMontage_Implementation();

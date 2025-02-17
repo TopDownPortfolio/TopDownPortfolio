@@ -9,14 +9,11 @@ class TOPDOWNPORTFOLIO_API UO_InputAction_Move : public UO_InputAction
 {
 	GENERATED_BODY()
 private:
-	float m_fShortPressThreshold;
-	float m_fFollowTime;
 
 public:
 	UO_InputAction_Move();
 
 protected:
-
 	void E_Release();
 	virtual void E_Triggered(const FInputActionValue& fInputValue) override;
 	virtual void E_Started(const FInputActionValue& fInputValue) override;

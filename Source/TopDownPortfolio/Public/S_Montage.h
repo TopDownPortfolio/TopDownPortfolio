@@ -37,7 +37,6 @@ UCLASS(Abstract)
 class TOPDOWNPORTFOLIO_API US_Montage : public UUserDefinedStruct
 {
 	GENERATED_BODY()
-
 private:
 	US_Montage() {};
 };

@@ -43,7 +43,11 @@ protected:
 	void E_Register(FE_WindowID eWindowID, UUserWidget* pWidget);
 
 public:	
+	UFUNCTION(BlueprintPure)
+
+	UUserWidget* E_GetWidget(FE_WindowID eWindowID);
 	void E_RegisterWidget(FE_WindowID eWindowID);
+	UFUNCTION(BlueprintCallable)
 	void E_UnRegisterWidget();
 
 	UFUNCTION(BlueprintCallable)

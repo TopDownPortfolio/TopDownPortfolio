@@ -3,6 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetTree.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 
 UC_WidgetMGR::UC_WidgetMGR() :
@@ -41,6 +42,7 @@ void UC_WidgetMGR::BeginPlay()
 			m_arWidgetData[i].pWidget = E_CreateWidget(*pcWidget);
 	}
 }
+
 UPanelWidget* UC_WidgetMGR::E_GetMainPanel()
 {
 	if (!m_pMainPanel)
@@ -61,6 +63,11 @@ bool UC_WidgetMGR::E_CheckWindow(FE_WindowID eWindowID)
 void UC_WidgetMGR::E_Register(FE_WindowID eWindowID, UUserWidget* pWidget)
 {
 	m_arWidgetData[(uint8)eWindowID].pWidget = pWidget;
+}
+
+UUserWidget* UC_WidgetMGR::E_GetWidget(FE_WindowID eWindowID)
+{
+	return m_arWidgetData[(uint8)eWindowID].pWidget;
 }
 
 void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eWindowID)

@@ -29,6 +29,8 @@ protected:
 
 	TArray<int> m_arIndex[(uint8)FE_SkillID::E_EnumMAX];
 	S_CurrentData m_sSrc;
+	float m_arMaxTime[(uint8)FE_SkillID::E_EnumMAX];
+	float m_arCoolTime[(uint8)FE_SkillID::E_EnumMAX];
 public:
 	UC_SkillMGR();
 
@@ -43,6 +45,16 @@ protected:
 		sSrc.nIndex = sDst.nIndex;
 	}
 public:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintPure)
+	float E_CoolTimeRadio(FE_SkillID eSkillID) { return m_arCoolTime[(uint8)eSkillID] / m_arMaxTime[(uint8)eSkillID]; }
+	UFUNCTION(BlueprintPure)
+	float E_MaxCoolTime(FE_SkillID eSkillID) { return m_arMaxTime[(uint8)eSkillID]; }
+	UFUNCTION(BlueprintPure)
+	float E_CurrentCoolTime(FE_SkillID eSkillID) { return m_arCoolTime[(uint8)eSkillID]; }
+
+	UFUNCTION(BlueprintCallable)
+	void E_SetSkillIndex(FE_SkillID eSkillID, int nIndex, int nValue);
 	UFUNCTION(BlueprintCallable)
 	bool E_Action(FE_SkillID eID);
 	UFUNCTION(BlueprintCallable)

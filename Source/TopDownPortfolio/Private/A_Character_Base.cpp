@@ -66,6 +66,8 @@ void AA_Character_Base::E_SubState(FE_StateType eEnum)
 {
 	if (E_CheckState(eEnum))
 		m_eState ^= (uint8)eEnum;
+	// or로 추가 and로 확인 xor 로 제거
+	// 주의 : xor를 잘못 사용하면 추가가 되버림 if로 확인하는걸 추천
 }
 
 
@@ -74,12 +76,6 @@ bool AA_Character_Base::ShouldTakeDamage(float Damage, FDamageEvent const& Damag
 	bool bResult = ACharacter::ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	return bResult;
-}
-
-
-void AA_Character_Base::E_Action_Implementation(FE_SkillID eID)
-{
-	
 }
 
 void AA_Character_Base::E_Attack(AA_Character_Base* pTarget)

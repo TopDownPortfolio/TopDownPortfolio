@@ -1,42 +1,51 @@
 #include "C_SkillMGR.h"
+#include "A_PlayerController.h"
 #include "A_Character_Base.h"
 #include "D_DataTable.h"
 #include "C_MontageMGR.h"
 #include "C_StatusMGR.h"
 
 UC_SkillMGR::UC_SkillMGR() :
-	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}
+	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}, On_ActionActive{},
+	m_arMaxTime{}, m_arCoolTime{}
 {
-	PrimaryComponentTick.bCanEverTick  = false;
+	PrimaryComponentTick.bCanEverTick  = true;
 	D_DataTable cData{};
 	m_pDataTable = cData.E_Default_Skiil();
+	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
+	{
+		m_arIndex[i].Init(0, 4);
+		m_arMaxTime[i] = 4;
+		m_arCoolTime[i] = -1;
+	}
 }
 
 
 void UC_SkillMGR::BeginPlay()
 {
 	UActorComponent::BeginPlay();
-	m_pOwner = Cast<AA_Character_Base> (GetOwner());
-	if (!m_pOwner)
+	AA_PlayerController* pController = Cast<AA_PlayerController>(GetOwner());
+	if (!pController || pController->AcknowledgedPawn == nullptr)
 	{
 		DestroyComponent();
 		return;
 	}
 
+	m_pOwner = Cast<AA_Character_Base>(pController->AcknowledgedPawn);
 	// TODO : 아래의 m_arIndex 설정은 임시 이고 추후 Interaction 추가
-	m_arIndex[0].Init(0, 1);
-	m_arIndex[1].Init(0, 4);
-	m_arIndex[1][1] = 1; 
-	m_arIndex[1][2] = 2; 
-	m_arIndex[1][3] = 3; 
-	m_arIndex[2].Init(0, 4);
-	m_arIndex[2][1] = 1;
-	m_arIndex[2][2] = 2;
-	m_arIndex[2][3] = 4;
-	m_arIndex[3].Init(0, 4);
-	m_arIndex[3][1] = 1;
-	m_arIndex[3][2] = 2;
-	m_arIndex[3][3] = 4;
+
+	E_SetSkillIndex(FE_SkillID::E_01, 1, 1);
+	E_SetSkillIndex(FE_SkillID::E_01, 2, 2);
+	E_SetSkillIndex(FE_SkillID::E_01, 3, 3);
+
+	E_SetSkillIndex(FE_SkillID::E_02, 1, 1);
+	E_SetSkillIndex(FE_SkillID::E_02, 2, 2);
+	E_SetSkillIndex(FE_SkillID::E_02, 3, 3);
+
+	E_SetSkillIndex(FE_SkillID::E_03, 1, 1);
+	E_SetSkillIndex(FE_SkillID::E_03, 2, 2);
+	E_SetSkillIndex(FE_SkillID::E_03, 3, 3);
+
 	//m_arIndex[3][3] = 3;
 	if (m_pDataTable)
 	{
@@ -48,6 +57,24 @@ void UC_SkillMGR::BeginPlay()
 			m_arSkillData[(uint8)pData->eSkillID] = pData;
 		}
 	}
+}
+
+void UC_SkillMGR::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
+	{
+		if (m_arCoolTime[i] > 0)
+			m_arCoolTime[i] -= DeltaTime;
+		if (m_arCoolTime[i] < 0)
+			m_arCoolTime[i] = 0;
+	}
+}
+
+void UC_SkillMGR::E_SetSkillIndex(FE_SkillID eSkillID, int nIndex, int nValue)
+{
+	uint8 eIndex = (uint8)eSkillID;
+	if (m_arIndex[eIndex].Num() > nIndex)
+		m_arIndex[(uint8)eSkillID][nIndex] = nValue;
 }
 
 bool UC_SkillMGR::E_Action(FE_SkillID eID)
@@ -70,12 +97,19 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	//	sDst.nIndex = m_sSrc.nIndex;
 	//}
 	bool bResult = pMontageMGR->E_CheckPlayable(eMontageID, sDst.nPlayIndex);
+	if (m_arCoolTime[sDst.nSkillIndex] > 0.0f)
+		bResult = false;
 	if (bResult && pStatusMGR->E_CheckAdd(eStatusID, fStatus))
 	{
+		m_arCoolTime[sDst.nSkillIndex] = m_arMaxTime[sDst.nSkillIndex];
 		E_Copy(m_sSrc, sDst);
 		m_pOwner->E_SubState(FE_StateType::E_IsTravel);
 		pStatusMGR->E_AddStatus_Current(eStatusID, fStatus);
 		E_PlayNextMontage();
+	}
+	if (On_ActionActive.IsBound())
+	{
+		On_ActionActive.Broadcast(sDst.eSkillID, bResult);
 	}
 	return bResult;
 }

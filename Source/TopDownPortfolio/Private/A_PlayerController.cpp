@@ -2,9 +2,11 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "E_Skill.h"
+#include "C_SkillMGR.h"
+
 
 AA_PlayerController::AA_PlayerController() :
-	APlayerController{}, m_pWidgetMGR{}, m_pInputActionMGR {}, m_pInterfaceMGR{}, FXCursor{}
+	APlayerController{}, m_pWidgetMGR{}, m_pInputActionMGR{}, m_pInterfaceMGR{}, FXCursor{}, m_pSkillMGR{}
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -12,6 +14,7 @@ AA_PlayerController::AA_PlayerController() :
 	m_pWidgetMGR = CreateDefaultSubobject<UC_WidgetMGR>("WidgetMGR");
 	m_pInputActionMGR = CreateDefaultSubobject<UC_InputActionMGR>("InputActionMGR");
 	m_pInterfaceMGR = CreateDefaultSubobject<UC_InterfaceMGR>("InterfaceMGR");
+	m_pSkillMGR = CreateDefaultSubobject<UC_SkillMGR>("SkillMGR");
 }
 
 void AA_PlayerController::E_RegisterComponent(UActorComponent* pComponent)
@@ -28,28 +31,23 @@ void AA_PlayerController::E_SpawnEffect()
 
 FE_SkillID AA_PlayerController::E_GetSkillID(FE_InputActionID eID)
 {
-	FE_SkillID eResult = FE_SkillID::E_NONE;
-	switch (eID)
-	{
-	case FE_InputActionID::E_NONE:
-		break;
-	case FE_InputActionID::E_RMouseClick:
-		break;
-	case FE_InputActionID::E_LMouseClick:
-		break;
-	case FE_InputActionID::E_Q:
-		eResult = FE_SkillID::E_01;
-		break;
-	case FE_InputActionID::E_W:
-		eResult = FE_SkillID::E_02;
-		break;
-	case FE_InputActionID::E_E:
-		eResult = FE_SkillID::E_03;
-		break;
-	default:
-		break;
-	}
-	return eResult;
+	FE_SkillID arSkillID[(uint8)FE_InputActionID::E_EnumMAX]{};
+	arSkillID[(uint8)FE_InputActionID::E_Q] = FE_SkillID::E_01;
+	arSkillID[(uint8)FE_InputActionID::E_W] = FE_SkillID::E_02;
+	arSkillID[(uint8)FE_InputActionID::E_E] = FE_SkillID::E_03;
+	return arSkillID[(uint8)eID];
+}
+
+FE_WindowID AA_PlayerController::E_GetWidgetID(FE_InputActionID eID)
+{
+	FE_WindowID arSkillID[(uint8)FE_InputActionID::E_EnumMAX]{};
+	arSkillID[(uint8)FE_InputActionID::E_SkillWindow] = FE_WindowID::E_Skill;
+	return arSkillID[(uint8)eID];
+}
+
+void AA_PlayerController::E_Action_Implementation(FE_SkillID eID)
+{
+	m_pSkillMGR->E_Action(eID);
 }
 
 void AA_PlayerController::SetupInputComponent()
@@ -64,6 +62,7 @@ void AA_PlayerController::OnConstruction(const FTransform& Transform)
 	APlayerController::OnConstruction(Transform);
 	E_RegisterComponent(m_pWidgetMGR);
 	E_RegisterComponent(m_pInputActionMGR);
+	E_RegisterComponent(m_pSkillMGR);
 	E_RegisterComponent(m_pInterfaceMGR);
 }
 

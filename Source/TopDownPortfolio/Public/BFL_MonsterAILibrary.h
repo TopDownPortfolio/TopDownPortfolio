@@ -13,7 +13,7 @@ public:
 	static FName E_GetName_MonsterState()  { return "eMonsterState"; }
 
 	UFUNCTION(BlueprintPure, Category = "MonsterAI")
-	static FName E_GetName_Target()  { return "oTarget"; }
+	static FName E_GetName_Target()  { return "aTarget"; }
 
 	UFUNCTION(BlueprintPure, Category = "MonsterAI")
 	static FName E_GetName_Vector()  { return "oTarget"; }

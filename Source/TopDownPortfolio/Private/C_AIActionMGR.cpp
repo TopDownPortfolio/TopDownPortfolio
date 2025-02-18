@@ -1,12 +1,13 @@
 #include "C_AIActionMGR.h"
 #include "A_Character_Base.h" 
 #include "C_MontageMGR.h"
+#include "D_DataTable.h"
 
 
 UC_AIActionMGR::UC_AIActionMGR()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	//m_pq.((uint8)E_ActionIndex::E_EnumMax);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_AIAction);
 }
 
 void UC_AIActionMGR::BeginPlay()

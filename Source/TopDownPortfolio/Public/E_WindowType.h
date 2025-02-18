@@ -9,10 +9,3 @@ enum class FE_WindowID: uint8
 	E_Inventory,
 	E_EnumMAX UMETA(Hidden),
 };
-
-class TOPDOWNPORTFOLIO_API E_WindowType
-{
-private:
-	E_WindowType() = delete;
-	~E_WindowType() = delete;
-};

@@ -15,10 +15,3 @@ enum class FE_InputActionID : uint8
 	E_WindowClose,
 	E_EnumMAX  UMETA(Hidden)
 };
-
-class TOPDOWNPORTFOLIO_API E_InputActionID
-{
-private:
-	E_InputActionID() = delete;
-	~E_InputActionID() = delete;
-};

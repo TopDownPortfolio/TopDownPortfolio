@@ -10,8 +10,7 @@ UC_SkillMGR::UC_SkillMGR() :
 	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
 {
 	PrimaryComponentTick.bCanEverTick  = true;
-	D_DataTable cData{};
-	m_pDataTable = cData.E_Default_Skiil();
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Skill);
 	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
 	{
 		m_arIndex[i].Init(0, 4);
@@ -127,5 +126,5 @@ bool UC_SkillMGR::E_SetNextMontage()
 	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num())
 		m_sSrc.nIndex = 0;
 	m_sSrc.nPlayIndex = m_arIndex[m_sSrc.nSkillIndex][m_sSrc.nIndex];
-	return m_sSrc.nIndex != 0;
+	return m_sSrc.nPlayIndex != 0 && m_sSrc.nIndex != 0;
 }

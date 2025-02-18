@@ -12,10 +12,3 @@ enum class FE_Character: uint8
 	E_04,
 	E_EnumMAX  UMETA(Hidden),
 };
-
-class TOPDOWNPORTFOLIO_API E_CharacterID
-{
-private:
-	E_CharacterID() = delete;
-	~E_CharacterID() = delete;
-};

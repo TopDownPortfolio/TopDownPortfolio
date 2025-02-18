@@ -4,64 +4,39 @@
 
 class UDataTable;
 class UInputMappingContext;
+class UUserWidget;
 
-class TOPDOWNPORTFOLIO_API D_DataTable
+class TOPDOWNPORTFOLIO_API UD_DataTable 
 {
 public:
-	D_DataTable() = default;
-	~D_DataTable() = default;
-
-private:
-	template<class T>
-	T* E_Finder(const TCHAR* strFilePath);
-
 	enum E_DefaultPath
 	{
+		E_None,
 		E_Montage,
 		E_Status,
 		E_Skill,
-		E_InputMapping
+		E_InputMapping,
+		E_AIAction,
+		E_MainWidget,
+		E_EnumMax
 	};
-
-	const TCHAR* E_GetDefault(E_DefaultPath eID)
+private:
+	UD_DataTable() = default;
+	~UD_DataTable() = default;
+	
+	static const TCHAR* E_GetDefault(E_DefaultPath eID)
 	{
-		const TCHAR* pResult{};
-		switch (eID)
-		{
-		case E_DefaultPath::E_Montage:
-			pResult = TEXT("/Game/02_Data/Montage/DT-MontageData-MM");
-			// Script/Engine.DataTable'/Game/02_Data/Montage/DT-MontageData-MM.DT-MontageData-MM'
-			break;
-		case E_DefaultPath::E_Status:
-			pResult = TEXT("/Game/02_Data/Status/DT-StatusData-MM");
-			// Script / Engine.DataTable'/Game/02_Data/Status/DT-StatusData-MM.DT-StatusData-MM'
-			break;
-		case E_DefaultPath::E_InputMapping:
-			pResult = TEXT("/Game/01_Blueprint/Input/IMC_Default");
-			// Script/EnhancedInput.InputMappingContext'/Game/01_Blueprint/Input/IMC_Default.IMC_Default'
-			break;
-		case E_DefaultPath::E_Skill:
-			pResult = TEXT("/Game/02_Data/Skill/DT-SkillData");
-			// Script / Engine.DataTable'/Game/02_Data/Skill/DT-SkillData.DT-SkillData'
-			break;
-		default:
-			break;
-		}
-		return pResult;
+		const TCHAR* pResult[E_DefaultPath::E_EnumMax]{};
+		pResult[E_DefaultPath::E_Montage]			= TEXT("/Game/02_Data/DefaultData/DT-MontageData.DT-MontageData");
+		pResult[E_DefaultPath::E_Status]			= TEXT("/Game/02_Data/DefaultData/DT-StatusData.DT-StatusData");
+		pResult[E_DefaultPath::E_Skill]				= TEXT("/Game/02_Data/DefaultData/DT-SkillData.DT-SkillData");
+		pResult[E_DefaultPath::E_InputMapping]		= TEXT("/Game/01_Blueprint/Input/IMC_Default");
+		pResult[E_DefaultPath::E_AIAction]			= TEXT("/Game/02_Data/DefaultData/DT-AIAction.DT-AIAction");
+		pResult[E_DefaultPath::E_MainWidget]		= TEXT("/Game/01_Blueprint/Widget/W-Main");
+		return pResult[eID];
 	}
 public:
-	UDataTable* E_Default_Montage();
-	UDataTable* E_Default_Status();
-	UDataTable* E_Default_Skiil();
-	UInputMappingContext* E_Default_InputMapping();
+	static UDataTable* E_GetDefault_DataTable(E_DefaultPath eID);
+	static UInputMappingContext* E_GetDefault_InputMappingContext(E_DefaultPath eID);
+	static TSubclassOf< UUserWidget> E_GetDefault_UserWidgetClass(E_DefaultPath eID);
 };
-
-template<class T>
-inline T* D_DataTable::E_Finder(const TCHAR* strFilePath)
-{
-	T* pResult{};
-	ConstructorHelpers::FObjectFinder<T> ObejctFind(strFilePath);
-	if (ObejctFind.Succeeded())
-		pResult = ObejctFind.Object;
-	return pResult;
-}

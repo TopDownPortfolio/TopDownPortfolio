@@ -13,9 +13,3 @@ enum class FE_StateType : uint8
     E_CantTarget        = (1 << 2),
     E_IsTravel          = (1 << 3)
 };
-class TOPDOWNPORTFOLIO_API E_State
-{
-private:
-	E_State() = delete;
-	~E_State() = delete;
-};

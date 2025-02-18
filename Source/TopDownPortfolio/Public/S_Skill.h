@@ -21,11 +21,3 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fAttack;
 };
-
-UCLASS(Abstract)
-class TOPDOWNPORTFOLIO_API US_Skill : public UUserDefinedStruct
-{
-	GENERATED_BODY()
-private:
-	US_Skill() {};
-};

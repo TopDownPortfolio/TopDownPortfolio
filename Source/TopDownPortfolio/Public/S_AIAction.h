@@ -21,11 +21,3 @@ public:
 		return sSrc->nPriority > sDst->nPriority;
 	}
 };
-
-UCLASS(Abstract)
-class TOPDOWNPORTFOLIO_API US_AIAction : public UUserDefinedStruct
-{
-	GENERATED_BODY()
-private:
-	US_AIAction() {}
-};

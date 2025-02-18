@@ -3,10 +3,9 @@
 #include "CoreMinimal.h"
 
 UENUM(BlueprintType)
-enum class FE_BuffID : uint8
+enum class FE_AIActionType : uint8
 {
 	E_NONE UMETA(Hidden),
-	E_Base,
-	E_Status,
+	E_Montage,
 	E_EnumMAX UMETA(Hidden),
 };

@@ -10,13 +10,15 @@ class TOPDOWNPORTFOLIO_API UBFL_MonsterAILibrary : public UBlueprintFunctionLibr
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintPure, Category = "MonsterAI")
+	static FName E_GetName_Self() { return "SelfActor"; }
+	UFUNCTION(BlueprintPure, Category = "MonsterAI")
 	static FName E_GetName_MonsterState()  { return "eMonsterState"; }
 
 	UFUNCTION(BlueprintPure, Category = "MonsterAI")
 	static FName E_GetName_Target()  { return "aTarget"; }
 
 	UFUNCTION(BlueprintPure, Category = "MonsterAI")
-	static FName E_GetName_Vector()  { return "oTarget"; }
+	static FName E_GetName_Vector()  { return "vLocation"; }
 
 	UFUNCTION(BlueprintPure, Category = "MonsterAI", Meta = (HidePin = "NodeOwner", DefaultToSelf = "NodeOwner"))
 	static uint8 E_GetBBEnum(UBTNode* NodeOwner, FName strKeyName);

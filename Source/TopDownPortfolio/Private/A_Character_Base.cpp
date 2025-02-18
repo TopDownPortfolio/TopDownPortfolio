@@ -10,7 +10,7 @@
 #include "C_MontageMGR.h"
 
 AA_Character_Base::AA_Character_Base() :
-	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_eState{}, m_arHideBone {}
+	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_eState{}, m_arHideBone{}, m_eCharacterType{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
@@ -57,6 +57,16 @@ void AA_Character_Base::E_HideSocket()
 	}
 }
 
+FE_Affiliation AA_Character_Base::E_GetAffiliation(AA_Character_Base* pACharacter)
+{
+	FE_Affiliation eReulst = FE_Affiliation::E_Neutral;
+	if (pACharacter)
+	{
+		eReulst = C_CharacterType::E_GetAffiliation(pACharacter->E_GetCharacterType(), E_GetCharacterType());
+	}
+	return eReulst;
+}
+
 void AA_Character_Base::E_AddState(FE_StateType eEnum)
 {
 	m_eState |= (uint8)eEnum;
@@ -80,6 +90,9 @@ bool AA_Character_Base::ShouldTakeDamage(float Damage, FDamageEvent const& Damag
 
 void AA_Character_Base::E_Attack(AA_Character_Base* pTarget)
 {
+	FE_Affiliation eAffiliation = C_CharacterType::E_GetAffiliation(pTarget->E_GetCharacterType(), E_GetCharacterType());
+	if (eAffiliation != FE_Affiliation::E_Enemy)
+		return;
 	float fDamage = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_ATTACK);
 	FDamageEvent fDamageEvent{};
 	pTarget->E_Defend(fDamage, fDamageEvent, GetController(), this);

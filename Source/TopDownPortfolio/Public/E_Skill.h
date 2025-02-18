@@ -12,11 +12,3 @@ enum class FE_SkillID: uint8
 	E_04,
 	E_EnumMAX UMETA(Hidden),
 };
-
-
-class TOPDOWNPORTFOLIO_API E_Skill
-{
-private:
-	E_Skill() = delete;
-	~E_Skill() = delete;
-};

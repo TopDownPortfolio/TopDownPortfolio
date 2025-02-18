@@ -21,8 +21,6 @@ protected:
 	};
 private:
 	APlayerController* m_pController;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf< UUserWidget> m_cMain;
 	UUserWidget* m_pMain;
 	UPanelWidget* m_pMainPanel;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

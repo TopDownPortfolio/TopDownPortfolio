@@ -8,10 +8,10 @@
 
 
 UC_WidgetMGR::UC_WidgetMGR() :
-	UActorComponent{}, m_pController{}, m_cMain{}, m_pMain{}, m_pMainPanel{} , m_mapWindow{}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
+	UActorComponent{}, m_pController{}, m_pMain{},m_pMainPanel {}, m_mapWindow{}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_cMain = UD_DataTable::E_GetDefault_UserWidgetClass(UD_DataTable::E_DefaultPath::E_MainWidget);
+	m_mapWindow.FindOrAdd(FE_WindowID::E_Main, UD_DataTable::E_GetDefault_UserWidgetClass(UD_DataTable::E_DefaultPath::E_MainWidget));
 	m_nStackCount = -1;
 }
 
@@ -20,15 +20,10 @@ void UC_WidgetMGR::BeginPlay()
 {
 	UActorComponent::BeginPlay();
 	m_pController = Cast<APlayerController>(GetOwner());
-	if (!m_pController || !m_cMain)
+	if (!m_pController )
 	{
 		DestroyComponent();
 		return;
-	}
-	if (m_cMain)
-	{
-		m_pMain = E_CreateWidget(m_cMain);
-		m_pMain->AddToViewport();
 	}
 	for (uint8 i = (uint8)FE_WindowID::E_NONE + 1; i < (uint8)FE_WindowID::E_EnumMAX; i++)
 	{
@@ -37,6 +32,8 @@ void UC_WidgetMGR::BeginPlay()
 		if (pcWidget)
 			m_arWidgetData[i].pWidget = E_CreateWidget(*pcWidget);
 	}
+	m_pMain = m_arWidgetData[(uint8)FE_WindowID::E_Main].pWidget;
+	m_pMain->AddToViewport();
 }
 
 UPanelWidget* UC_WidgetMGR::E_GetMainPanel()

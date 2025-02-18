@@ -22,6 +22,7 @@ AA_Character_Player::AA_Character_Player() :
 	E_Init_CameraComponent();
 	m_pWeaponR = CreateDefaultSubobject<UChildActorComponent>(E_GetWeaponRSocketName());
 	m_pWeaponR->SetupAttachment(GetMesh(), E_GetWeaponRSocketName());
+	m_eCharacterType = FE_CharacterType::E_Player;
 }
 
 void AA_Character_Player::OnConstruction(const FTransform& Transform)

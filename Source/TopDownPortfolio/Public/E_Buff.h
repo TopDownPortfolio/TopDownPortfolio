@@ -10,10 +10,3 @@ enum class FE_BuffID : uint8
 	E_Status,
 	E_EnumMAX UMETA(Hidden),
 };
-
-class TOPDOWNPORTFOLIO_API E_Buff
-{
-private:
-	E_Buff() = delete;
-	~E_Buff() = delete;
-};

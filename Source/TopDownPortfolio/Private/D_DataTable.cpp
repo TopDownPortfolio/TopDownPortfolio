@@ -1,23 +1,31 @@
 #include "D_DataTable.h"
 #include "InputMappingContext.h"
 #include "Engine/DataTable.h"
+#include "Blueprint/UserWidget.h"
 
-UDataTable* D_DataTable::E_Default_Montage()
+UDataTable* UD_DataTable::E_GetDefault_DataTable(E_DefaultPath eID)
 {
-	return E_Finder< UDataTable>(E_GetDefault(E_DefaultPath::E_Montage));
+	UDataTable* pResult{};
+	ConstructorHelpers::FObjectFinder<UDataTable> ObejctFind(E_GetDefault(eID));
+	if (ObejctFind.Succeeded())
+		pResult = ObejctFind.Object;
+	return pResult;
 }
 
-UDataTable* D_DataTable::E_Default_Status()
+UInputMappingContext* UD_DataTable::E_GetDefault_InputMappingContext(E_DefaultPath eID)
 {
-	return E_Finder< UDataTable>(E_GetDefault(E_DefaultPath::E_Status));
+	UInputMappingContext* pResult{};
+	ConstructorHelpers::FObjectFinder<UInputMappingContext> ObejctFind(E_GetDefault(eID));
+	if (ObejctFind.Succeeded())
+		pResult = ObejctFind.Object;
+	return pResult;
 }
 
-UDataTable* D_DataTable::E_Default_Skiil()
+TSubclassOf< UUserWidget> UD_DataTable::E_GetDefault_UserWidgetClass(E_DefaultPath eID)
 {
-	return  E_Finder< UDataTable>(E_GetDefault(E_DefaultPath::E_Skill));;
-}
-
-UInputMappingContext* D_DataTable::E_Default_InputMapping()
-{
-	return E_Finder< UInputMappingContext>(E_GetDefault(E_InputMapping));
+	TSubclassOf< UUserWidget> cResult{};
+	ConstructorHelpers::FClassFinder<UUserWidget> ClassFind(E_GetDefault(eID));
+	if (ClassFind.Succeeded())
+		cResult = ClassFind.Class;
+	return cResult;
 }

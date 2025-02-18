@@ -15,11 +15,3 @@ enum class FE_MontageID : uint8
 	E_04,
 	E_EnumMAX  UMETA(Hidden),
 };
-
-
-class TOPDOWNPORTFOLIO_API E_MontageID
-{
-private:
-	E_MontageID() = delete;
-	~E_MontageID() = delete;
-};

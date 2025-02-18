@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "E_State.h"
+#include "E_CharacterType.h"
 #include "A_Character_Base.generated.h"
 
 class UC_MontageMGR;
@@ -28,10 +29,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Buff, meta = (AllowPrivateAccess = "true"))
 	UC_BuffMGR* m_pBuffMGR;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = State, meta = (AllowPrivateAccess = "true", Bitmask, BitmaskEnum = FE_StateType))
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true", Bitmask, BitmaskEnum = FE_StateType))
 	uint8 m_eState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	TArray<FName> m_arHideBone;
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	FE_CharacterType m_eCharacterType;
 public:
 	AA_Character_Base();
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -46,6 +49,10 @@ protected:
 	FName E_GetDamageCollisionProfile() { return "P_Defend"; }
 	void E_HideSocket();
 public:	
+	UFUNCTION(BlueprintPure)
+	FE_CharacterType E_GetCharacterType() { return m_eCharacterType; }
+	UFUNCTION(BlueprintPure)
+	FE_Affiliation E_GetAffiliation(AA_Character_Base* pACharacter);
 
 	UFUNCTION(BlueprintPure)
 	bool E_CheckState(FE_StateType eEnum) { return m_eState & (uint8)eEnum; }
@@ -67,5 +74,4 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UC_StatusMGR* E_GetStatusMGR() { return m_pStatusMGR; }
-
 };

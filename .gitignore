@@ -72,3 +72,5 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+Content/02_Data/Monster/Minions/Global/MaterialLayers/Wood/T_TreeBark_D.uasset
+Content/02_Data/Monster/Minions/Global/MaterialLayers/Wood/T_TreeBark_N.uasset

@@ -4,18 +4,14 @@
 #include "Blueprint/WidgetTree.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "D_DataTable.h"
 
 
 UC_WidgetMGR::UC_WidgetMGR() :
 	UActorComponent{}, m_pController{}, m_cMain{}, m_pMain{}, m_pMainPanel{} , m_mapWindow{}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
-	ConstructorHelpers::FClassFinder<UUserWidget> ObejctFind(TEXT("/Game/01_Blueprint/Widget/W-Main"));
-	// /Script/UMGEditor.WidgetBlueprint'/Game/01_Blueprint/Widgm_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
-
-	if (ObejctFind.Succeeded())
-		m_cMain = ObejctFind.Class;
+	m_cMain = UD_DataTable::E_GetDefault_UserWidgetClass(UD_DataTable::E_DefaultPath::E_MainWidget);
 	m_nStackCount = -1;
 }
 

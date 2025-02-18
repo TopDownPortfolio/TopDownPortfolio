@@ -24,7 +24,7 @@ enum class FE_InputTriggerEvent : uint8
 	E_MAX UMETA(Hidden)
 };
 
-UCLASS()
+UCLASS(Abstract)
 class TOPDOWNPORTFOLIO_API UO_InputAction : public UObject
 {
 	GENERATED_BODY()
@@ -43,18 +43,23 @@ private:
 	void E_BindAction();
 	void E_RemoveActionBinding();
 	void E_RemoveActionBinding(UEnhancedInputComponent* pEnhancedInputComponent, FEnhancedInputActionEventBinding* pEventBinding);
-
-protected:
-	virtual void E_Init_After(APlayerController* pController, UInputAction* pInputAction);
-	virtual void E_Triggered(const FInputActionValue& fInputValue);
-	virtual void E_Started(const FInputActionValue& fInputValue);
-	virtual void E_Ongoing(const FInputActionValue& fInputValue);
-	virtual void E_Canceled(const FInputActionValue& fInputValue);
-	virtual void E_Completed(const FInputActionValue& fInputValue);
-	AA_PlayerController* E_GetPlayerController() { return m_pController; }
-	AA_Character_Player* E_GetPlayerCharacter() { return Cast<AA_Character_Player>(m_pController->AcknowledgedPawn); }
+	void E_Triggered_Bind(const FInputActionValue& fInputValue);
+	void E_Started_Bind(const FInputActionValue& fInputValue);
+	void E_Ongoing_Bind(const FInputActionValue& fInputValue);
+	void E_Canceled_Bind(const FInputActionValue& fInputValue);
+	void E_Completed_Bind(const FInputActionValue& fInputValue);
 public:
 	void E_SetInputActionID(FE_InputActionID eID) { m_eID = eID; }
-	bool E_GetActive();
-	void E_SetActive(bool bValue);
+	bool E_GetActive() { return m_bActive; }
+	void E_SetActive(bool bValue) { m_bActive = bValue; }
+protected:
+	AA_PlayerController* E_GetPlayerController() { return m_pController; }
+	AA_Character_Player* E_GetPlayerCharacter() { return Cast<AA_Character_Player>(m_pController->AcknowledgedPawn); }
+	virtual bool E_CheckActive() ;
+	virtual void E_Init_After(APlayerController* pController, UInputAction* pInputAction) {}
+	virtual void E_Triggered(const FInputActionValue& fInputValue) {}
+	virtual void E_Started(const FInputActionValue& fInputValue) {}
+	virtual void E_Ongoing(const FInputActionValue& fInputValue) {}
+	virtual void E_Canceled(const FInputActionValue& fInputValue) {}
+	virtual void E_Completed(const FInputActionValue& fInputValue) {}
 };

@@ -31,7 +31,7 @@ void AA_PlayerController::E_SpawnEffect()
 
 FE_SkillID AA_PlayerController::E_GetSkillID(FE_InputActionID eID)
 {
-	FE_SkillID arSkillID[(uint8)FE_InputActionID::E_EnumMAX]{};
+	FE_SkillID arSkillID[(uint8)FE_InputActionID::E_EnumMAX] = { FE_SkillID::E_NONE };
 	arSkillID[(uint8)FE_InputActionID::E_Q] = FE_SkillID::E_01;
 	arSkillID[(uint8)FE_InputActionID::E_W] = FE_SkillID::E_02;
 	arSkillID[(uint8)FE_InputActionID::E_E] = FE_SkillID::E_03;
@@ -40,14 +40,15 @@ FE_SkillID AA_PlayerController::E_GetSkillID(FE_InputActionID eID)
 
 FE_WindowID AA_PlayerController::E_GetWidgetID(FE_InputActionID eID)
 {
-	FE_WindowID arSkillID[(uint8)FE_InputActionID::E_EnumMAX]{};
+	FE_WindowID arSkillID[(uint8)FE_InputActionID::E_EnumMAX] = { FE_WindowID::E_NONE };
 	arSkillID[(uint8)FE_InputActionID::E_SkillWindow] = FE_WindowID::E_Skill;
 	return arSkillID[(uint8)eID];
 }
 
 void AA_PlayerController::E_Action_Implementation(FE_SkillID eID)
 {
-	m_pSkillMGR->E_Action(eID);
+	if (m_pSkillMGR)
+		m_pSkillMGR->E_Action(eID);
 }
 
 void AA_PlayerController::SetupInputComponent()

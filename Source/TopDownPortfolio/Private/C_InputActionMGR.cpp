@@ -9,10 +9,8 @@ UC_InputActionMGR::UC_InputActionMGR() :
 	UActorComponent{}, m_mapInputAction{}, m_pDefaultMappingContext{}, m_arInputAction {}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	D_DataTable cData{};
-	m_pDefaultMappingContext = cData.E_Default_InputMapping();
+	m_pDefaultMappingContext = UD_DataTable::E_GetDefault_InputMappingContext(UD_DataTable::E_DefaultPath::E_InputMapping);
 }
-
 
 void UC_InputActionMGR::BeginPlay()
 {

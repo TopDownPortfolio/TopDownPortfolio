@@ -6,12 +6,11 @@
 #include "C_StatusMGR.h"
 
 UC_SkillMGR::UC_SkillMGR() :
-	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{}, On_ActionActive{},
-	m_arMaxTime{}, m_arCoolTime{}
+	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{},
+	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
 {
 	PrimaryComponentTick.bCanEverTick  = true;
-	D_DataTable cData{};
-	m_pDataTable = cData.E_Default_Skiil();
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Skill);
 	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
 	{
 		m_arIndex[i].Init(0, 4);
@@ -32,21 +31,17 @@ void UC_SkillMGR::BeginPlay()
 	}
 
 	m_pOwner = Cast<AA_Character_Base>(pController->AcknowledgedPawn);
-	// TODO : 아래의 m_arIndex 설정은 임시 이고 추후 Interaction 추가
-
+	// TODO : 아래의 E_SetSkillIndex 설정은 임시 이고 추후 DT 추가
 	E_SetSkillIndex(FE_SkillID::E_01, 1, 1);
 	E_SetSkillIndex(FE_SkillID::E_01, 2, 2);
 	E_SetSkillIndex(FE_SkillID::E_01, 3, 3);
-
 	E_SetSkillIndex(FE_SkillID::E_02, 1, 1);
 	E_SetSkillIndex(FE_SkillID::E_02, 2, 2);
 	E_SetSkillIndex(FE_SkillID::E_02, 3, 3);
-
 	E_SetSkillIndex(FE_SkillID::E_03, 1, 1);
 	E_SetSkillIndex(FE_SkillID::E_03, 2, 2);
 	E_SetSkillIndex(FE_SkillID::E_03, 3, 3);
 
-	//m_arIndex[3][3] = 3;
 	if (m_pDataTable)
 	{
 		TArray< FS_SkillData*> arData{};
@@ -131,5 +126,5 @@ bool UC_SkillMGR::E_SetNextMontage()
 	if (m_sSrc.nIndex >= m_arIndex[m_sSrc.nSkillIndex].Num())
 		m_sSrc.nIndex = 0;
 	m_sSrc.nPlayIndex = m_arIndex[m_sSrc.nSkillIndex][m_sSrc.nIndex];
-	return m_sSrc.nIndex != 0;
+	return m_sSrc.nPlayIndex != 0 && m_sSrc.nIndex != 0;
 }

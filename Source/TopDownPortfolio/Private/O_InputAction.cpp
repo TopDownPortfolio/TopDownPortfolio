@@ -30,11 +30,11 @@ void UO_InputAction::E_BindAction()
 	if (!pEnhancedInputComponent)
 		return;
 
-	m_arBinding[(uint8)FE_InputTriggerEvent::E_Triggered]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Triggered	, this, &UO_InputAction::E_Triggered	);
-	m_arBinding[(uint8)FE_InputTriggerEvent::E_Started]		= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Started	, this, &UO_InputAction::E_Started		);
-	m_arBinding[(uint8)FE_InputTriggerEvent::E_Ongoing]		= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Ongoing	, this, &UO_InputAction::E_Ongoing		);
-	m_arBinding[(uint8)FE_InputTriggerEvent::E_Canceled]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Canceled	, this, &UO_InputAction::E_Canceled		);
-	m_arBinding[(uint8)FE_InputTriggerEvent::E_Completed]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Completed	, this, &UO_InputAction::E_Completed	);
+	m_arBinding[(uint8)FE_InputTriggerEvent::E_Triggered]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Triggered	, this, &UO_InputAction::E_Triggered_Bind	);
+	m_arBinding[(uint8)FE_InputTriggerEvent::E_Started]		= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Started	, this, &UO_InputAction::E_Started_Bind		);
+	m_arBinding[(uint8)FE_InputTriggerEvent::E_Ongoing]		= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Ongoing	, this, &UO_InputAction::E_Ongoing_Bind		);
+	m_arBinding[(uint8)FE_InputTriggerEvent::E_Canceled]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Canceled	, this, &UO_InputAction::E_Canceled_Bind	);
+	m_arBinding[(uint8)FE_InputTriggerEvent::E_Completed]	= &pEnhancedInputComponent->BindAction(m_pInputAction, ETriggerEvent::Completed	, this, &UO_InputAction::E_Completed_Bind	);
 }
 
 void UO_InputAction::E_RemoveActionBinding()
@@ -60,36 +60,48 @@ void UO_InputAction::E_RemoveActionBinding(UEnhancedInputComponent* pEnhancedInp
 	pEventBinding = nullptr;
 }
 
-void UO_InputAction::E_Init_After(APlayerController* pController, UInputAction* pInputAction)
+
+void UO_InputAction::E_Triggered_Bind(const FInputActionValue& fInputValue)
 {
+	if (!E_CheckActive())
+		return;
+	E_Triggered(fInputValue);
+
 }
 
-void UO_InputAction::E_Triggered(const FInputActionValue& fInputValue)
+void UO_InputAction::E_Started_Bind(const FInputActionValue& fInputValue)
 {
+	if (!E_CheckActive())
+		return ;	
+	E_Started(fInputValue);
+
 }
 
-void UO_InputAction::E_Started(const FInputActionValue& fInputValue)
+void UO_InputAction::E_Ongoing_Bind(const FInputActionValue& fInputValue)
 {
+	if (!E_CheckActive())
+		return ;	
+	E_Ongoing(fInputValue);
+
 }
 
-void UO_InputAction::E_Ongoing(const FInputActionValue& fInputValue)
+void UO_InputAction::E_Canceled_Bind(const FInputActionValue& fInputValue)
 {
+	if (!E_CheckActive())
+		return ;
+	E_Canceled(fInputValue);
 }
 
-void UO_InputAction::E_Canceled(const FInputActionValue& fInputValue)
+void UO_InputAction::E_Completed_Bind(const FInputActionValue& fInputValue)
 {
+	if (!E_CheckActive())
+		return ;
+	E_Completed(fInputValue);
 }
 
-void UO_InputAction::E_Completed(const FInputActionValue& fInputValue)
+bool UO_InputAction::E_CheckActive()
 {
-}
-
-bool UO_InputAction::E_GetActive()
-{
-	return m_bActive;
-}
-
-void UO_InputAction::E_SetActive(bool bValue)
-{
-	m_bActive = bValue;
+	if (!m_bActive || !m_pController || !m_pController->AcknowledgedPawn)
+		return false;
+	return true;
 }

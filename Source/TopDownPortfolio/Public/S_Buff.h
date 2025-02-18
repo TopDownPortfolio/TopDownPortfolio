@@ -40,15 +40,3 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float fRegenerationRatePerSecond;
 };
-
-
-
-UCLASS(Abstract)
-class TOPDOWNPORTFOLIO_API US_Buff : public UUserDefinedStruct
-{
-	GENERATED_BODY()
-
-private:
-	US_Buff() {};
-	
-};

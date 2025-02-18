@@ -8,8 +8,7 @@ UC_MontageMGR::UC_MontageMGR() :
 	UActorComponent{}, m_arMontageData{}, m_pInstance{}, m_pCurrentData{}, m_sPlayData{}, m_eCurrentID{}, m_pDataTable{}, m_bIsPlaying{}, m_bCanPlay {}, m_bIsInterruptable{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	D_DataTable cData{};
-	m_pDataTable = cData.E_Default_Montage();
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Montage);
 	m_bCanPlay = true;
 	for (uint8 i = (uint8)FE_MontageID::E_NONE ; i < (uint8)FE_MontageID::E_EnumMAX; i++)
 	{
@@ -22,7 +21,7 @@ void UC_MontageMGR::BeginPlay()
 	UActorComponent::BeginPlay();
 	if (!Cast<ACharacter>(GetOwner()))
 	{
-		DestroyComponent(); // Only Animinstance ÀÖ´Â actor¸¸
+		DestroyComponent(); 
 		return;
 	}
 	Cast<ACharacter>(GetOwner())->GetMesh()->OnAnimInitialized.AddDynamic(this, &UC_MontageMGR::E_Bind);
@@ -96,11 +95,20 @@ bool UC_MontageMGR::E_Play(FE_MontageID eID, int nIndex)
 bool UC_MontageMGR::E_CheckPlayable(FE_MontageID eID, int nIndex)
 {
 	FS_MontageData* pDst = E_GetMontageData(eID, nIndex);
-	bool bResult = m_pCurrentData && pDst && m_pCurrentData->nIndex < pDst->nIndex;
-	if (m_bCanPlay || m_pCurrentData == nullptr)
-		bResult = true;
-	if (pDst == nullptr || m_pInstance == nullptr || m_bIsPlaying)
-		bResult = false;
+	if (!pDst || !m_pInstance)
+		return false;
+	if (m_bCanPlay)
+		return true;
+	bool bResult = !m_bIsPlaying;
+	if (!bResult)
+	{
+		if (m_pCurrentData)
+		{
+			bResult = false;
+			if (m_pCurrentData->eID == eID && m_pCurrentData->nIndex < pDst->nIndex)
+				bResult = true;
+		}
+	}
 	return bResult;
 }
 

@@ -16,18 +16,15 @@ class TOPDOWNPORTFOLIO_API AA_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
 protected: 
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = WidgetMGR, meta = (AllowPrivateAccess = "true"))
 	UC_WidgetMGR* m_pWidgetMGR;
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = InputActionMGR, meta = (AllowPrivateAccess = "true"))
 	UC_InputActionMGR* m_pInputActionMGR;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = InterfaceMGR, meta = (AllowPrivateAccess = "true"))
 	UC_InterfaceMGR* m_pInterfaceMGR;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillMGR, meta = (AllowPrivateAccess = "true"))
 	UC_SkillMGR* m_pSkillMGR;
 
 public:

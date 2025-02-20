@@ -6,11 +6,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "C_BuffMGR.h"
 #include "C_StatusMGR.h"
-#include "C_AttackMGR.h"
-#include "C_MontageMGR.h"
 
 AA_Character_Base::AA_Character_Base() :
-	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_eState{}, m_arHideBone{}, m_eCharacterType{}
+	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_arHideBone{}, m_pStateMGR{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
@@ -24,6 +22,7 @@ AA_Character_Base::AA_Character_Base() :
 	m_pDamageCollision->SetCollisionProfileName(E_GetDamageCollisionProfile());
 
 	m_pBuffMGR = CreateDefaultSubobject<UC_BuffMGR>("BuffMGR");
+	 m_pStateMGR= CreateDefaultSubobject<UC_StateMGR>("StateMGR");
 }
 
 void AA_Character_Base::OnConstruction(const FTransform& Transform)
@@ -38,7 +37,6 @@ void AA_Character_Base::OnConstruction(const FTransform& Transform)
 void AA_Character_Base::BeginPlay()
 {
 	Super::BeginPlay();
-	E_AddState(FE_StateType::E_IsTravel);
 	E_HideSocket();
 }
 
@@ -57,30 +55,6 @@ void AA_Character_Base::E_HideSocket()
 	}
 }
 
-FE_Affiliation AA_Character_Base::E_GetAffiliation(AA_Character_Base* pACharacter)
-{
-	FE_Affiliation eReulst = FE_Affiliation::E_Neutral;
-	if (pACharacter)
-	{
-		eReulst = C_CharacterType::E_GetAffiliation(pACharacter->E_GetCharacterType(), E_GetCharacterType());
-	}
-	return eReulst;
-}
-
-void AA_Character_Base::E_AddState(FE_StateType eEnum)
-{
-	m_eState |= (uint8)eEnum;
-}
-
-void AA_Character_Base::E_SubState(FE_StateType eEnum)
-{
-	if (E_CheckState(eEnum))
-		m_eState ^= (uint8)eEnum;
-	// or로 추가 and로 확인 xor 로 제거
-	// 주의 : xor를 잘못 사용하면 추가가 되버림 if로 확인하는걸 추천
-}
-
-
 bool AA_Character_Base::ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const
 {	
 	bool bResult = ACharacter::ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -90,7 +64,7 @@ bool AA_Character_Base::ShouldTakeDamage(float Damage, FDamageEvent const& Damag
 
 void AA_Character_Base::E_Attack(AA_Character_Base* pTarget)
 {
-	FE_Affiliation eAffiliation = C_CharacterType::E_GetAffiliation(pTarget->E_GetCharacterType(), E_GetCharacterType());
+	FE_Affiliation eAffiliation = m_pStateMGR->E_GetAffiliation(pTarget);
 	if (eAffiliation != FE_Affiliation::E_Enemy)
 		return;
 	float fDamage = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_ATTACK);
@@ -103,7 +77,8 @@ void AA_Character_Base::E_Defend(float DamageAmount, FDamageEvent const& DamageE
 	if (!CanBeDamaged())
 		return;
 
-	E_SubState(FE_StateType::E_IsTravel);
+	m_pStateMGR->E_SubState(FE_StateFlag::E_IsTravel);
+	m_pStateMGR->E_AddState(FE_StateFlag::E_IsHitted);
 	float fDamage = DamageAmount;
 	float fDefend = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_DEFEND);
 	if (fDefend > 0.0f)

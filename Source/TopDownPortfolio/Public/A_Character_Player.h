@@ -8,8 +8,8 @@
 class UCameraComponent;
 class USpringArmComponent;
 class UChildActorComponent;
+class AA_Attacker;
 struct FS_BuffData_Status;
-
 enum class FE_SkillID :uint8;
 
 UCLASS(Blueprintable)
@@ -21,8 +21,6 @@ protected:
 	UCameraComponent* m_pCameraComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* m_pCameraBoom;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* m_pWeaponR;
 	AA_Character_Base* m_pTarget;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
 	FS_BuffData_Status m_sMp;

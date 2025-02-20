@@ -21,12 +21,3 @@ enum class FE_Affiliation : uint8
 	E_Friend,
 	E_EnumMAX  UMETA(Hidden),
 };
-
-class C_CharacterType
-{
-private:
-	C_CharacterType() = default;
-	~C_CharacterType() = default;
-public:
-	static FE_Affiliation E_GetAffiliation(FE_CharacterType eSrc, FE_CharacterType eDst);
-};

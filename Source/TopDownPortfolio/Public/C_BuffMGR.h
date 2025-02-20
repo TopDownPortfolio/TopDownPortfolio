@@ -12,7 +12,7 @@ class TOPDOWNPORTFOLIO_API UC_BuffMGR : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY(VisibleAnywhere, Category = Data, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = BuffMGR, meta = (AllowPrivateAccess = "true"))
 	TArray< UO_Buff_Base*> m_arBuff;
 
 public:	

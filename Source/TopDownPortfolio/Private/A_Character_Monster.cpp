@@ -1,15 +1,41 @@
 #include "A_Character_Monster.h"
 #include "C_AIActionMGR.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "C_StatusMGR.h"
+
 
 AA_Character_Monster::AA_Character_Monster() :
 	AA_Character_Base{}, m_pAIAction{}
 {
 	m_pAIAction = CreateDefaultSubobject<UC_AIActionMGR>("AIActionMGR");
-	m_eCharacterType = FE_CharacterType::E_Monster;
+	m_pStateMGR->E_Init(FE_CharacterType::E_Monster);
 }
 
 void AA_Character_Monster::OnConstruction(const FTransform& Transform)
 {
 	AA_Character_Base::OnConstruction(Transform);
 	E_RegisterComponent(m_pAIAction);
+}
+void AA_Character_Monster::E_Dead()
+{
+	Destroy(true);
+}
+
+void AA_Character_Monster::E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser)
+{
+	AA_Character_Base::E_Defend(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float fHp = m_pStatusMGR->E_GetStatus_Current(FE_StatusID::E_HP);
+	if (fHp > 0)
+		return;
+	FTimerHandle sHandle{};
+	GetWorldTimerManager().SetTimer(sHandle, this, &AA_Character_Monster::E_Dead, 1.0f, false, 3.0f);
+	USkeletalMeshComponent* pMesh = GetMesh();
+	if (pMesh)
+	{
+		pMesh->SetAllBodiesSimulatePhysics(true);
+		pMesh->SetCollisionProfileName("Ragdoll");
+	}
+	GetCapsuleComponent()->DestroyComponent();
 }

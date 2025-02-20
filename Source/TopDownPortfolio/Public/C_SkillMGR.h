@@ -7,6 +7,7 @@
 #include "C_SkillMGR.generated.h"
 
 class AA_Character_Base;
+class UDataTable;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOPDOWNPORTFOLIO_API UC_SkillMGR : public UActorComponent
@@ -23,14 +24,16 @@ protected:
 	};
 protected:
 	AA_Character_Base* m_pOwner;
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
-	UDataTable* m_pDataTable;
+	
 	TArray<FS_SkillData*> m_arSkillData;
 
 	TArray<int> m_arIndex[(uint8)FE_SkillID::E_EnumMAX];
 	S_CurrentData m_sSrc;
 	float m_arMaxTime[(uint8)FE_SkillID::E_EnumMAX];
 	float m_arCoolTime[(uint8)FE_SkillID::E_EnumMAX];
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillMGR)
+	UDataTable* m_pDataTable;
 public:
 	UC_SkillMGR();
 

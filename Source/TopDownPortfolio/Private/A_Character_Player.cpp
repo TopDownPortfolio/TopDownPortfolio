@@ -6,11 +6,9 @@
 #include "Components/ChildActorComponent.h"
 #include "C_BuffMGR.h"
 #include "C_StatusMGR.h"
-#include "C_AttackMGR.h"
-#include "C_MontageMGR.h"
 
 AA_Character_Player::AA_Character_Player() :
-	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pWeaponR{}, m_pTarget{},  m_sMp{}
+	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pTarget{}, m_sMp{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -20,14 +18,25 @@ AA_Character_Player::AA_Character_Player() :
 	E_Init_CharacterMovement();
 	E_Init_CameraBoom();
 	E_Init_CameraComponent();
-	m_pWeaponR = CreateDefaultSubobject<UChildActorComponent>(E_GetWeaponRSocketName());
-	m_pWeaponR->SetupAttachment(GetMesh(), E_GetWeaponRSocketName());
-	m_eCharacterType = FE_CharacterType::E_Player;
+	//m_pWeaponR = CreateDefaultSubobject<UChildActorComponent>(E_GetWeaponRSocketName());
+	//m_pWeaponR->SetupAttachment(GetMesh(), E_GetWeaponRSocketName());
+	m_pStateMGR->E_Init(FE_CharacterType::E_Player);
 }
 
 void AA_Character_Player::OnConstruction(const FTransform& Transform)
 {
 	AA_Character_Base::OnConstruction(Transform);
+}
+
+void AA_Character_Player::BeginPlay()
+{
+	//E_GetAttackMGR()->E_RegisterAttacker(0, m_pWeaponR->GetChildActor());
+	AA_Character_Base::BeginPlay();
+
+	m_sMp.eBuffID = FE_BuffID::E_Status;
+	m_sMp.pCharacter = this;
+	if (m_pBuffMGR)
+		m_pBuffMGR->E_StartBuff(m_sMp);
 }
 
 void AA_Character_Player::E_Init_CharacterMovement()
@@ -46,17 +55,6 @@ void AA_Character_Player::E_Attack(AA_Character_Base* pTarget)
 	{
 		m_pTarget = pTarget;
 	}
-}
-
-void AA_Character_Player::BeginPlay()
-{
-	E_GetAttackMGR()->E_RegisterAttacker(0, m_pWeaponR->GetChildActor());
-	AA_Character_Base::BeginPlay();
-	
-	m_sMp.eBuffID = FE_BuffID::E_Status;
-	m_sMp.pCharacter = this;
-	if (m_pBuffMGR)
-		m_pBuffMGR->E_StartBuff(m_sMp);
 }
 
 void AA_Character_Player::E_Init_Pawn()

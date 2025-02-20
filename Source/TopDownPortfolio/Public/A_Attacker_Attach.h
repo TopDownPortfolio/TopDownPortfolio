@@ -4,21 +4,26 @@
 #include "A_Attacker.h"
 #include "A_Attacker_Attach.generated.h"
 
-class UC_AttackMGR;
+USTRUCT(BlueprintType)
+struct  FS_Attacker_AttachData
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf< UPrimitiveComponent>  cClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName strAttachSocket;
+};
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API AA_Attacker_Attach : public AA_Attacker
 {
 	GENERATED_BODY()
 protected:
-	UC_AttackMGR* m_pAttackMGR;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FS_Attacker_AttachData> m_arCollisionData;
+public:
 public:
 	AA_Attacker_Attach();
-
-protected:
-	virtual void BeginPlay() override;
-	virtual bool E_CheckOverlap(AActor* pTarget) override;
-	virtual void E_OverlapEvent(AActor* pTarget) override;
-	virtual void E_On()  override;
-	virtual void E_Off() override;
+	virtual void E_Init(AA_Character_Base* pOwner, FName strSocket) override;
 };

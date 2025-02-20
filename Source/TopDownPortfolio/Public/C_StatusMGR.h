@@ -39,10 +39,10 @@ class TOPDOWNPORTFOLIO_API UC_StatusMGR : public UActorComponent
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
-	UDataTable* m_pDataTable;
 	E_Status m_arStatus[(uint8)FE_StatusID::E_EnumMAX];
-
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = StatusMGR)
+	UDataTable* m_pDataTable;
 public:	
 	UC_StatusMGR();
 

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "C_AttackMGR.h"
 #include "A_Attacker.generated.h"
 
 class AA_Character_Base;
@@ -11,37 +12,43 @@ class TOPDOWNPORTFOLIO_API AA_Attacker : public AActor
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Attacker, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* m_pRoot;
 	TArray<UPrimitiveComponent*> m_arCollision; // save collision
 	AA_Character_Base* m_pOwner;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	bool m_bOnStart;
+	UC_AttackMGR* m_pAttackMGR;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attacker, meta = (AllowPrivateAccess = "true"))
+	int m_nAttackIndex;
 public:	
 	AA_Attacker();
-	virtual void OnConstruction(const FTransform& Transform) override;
+	//virtual void OnConstruction(const FTransform& Transform) override;
+
+	UFUNCTION()
+	void E_Destroy( AActor* DestroyedActor);
 protected:
 	virtual void BeginPlay() override;
-	
-protected:
 	UFUNCTION()
 	void E_BeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	void E_SetAttackCollisionEnabled(ECollisionEnabled::Type eEnable);
-	void E_Init();
-	virtual bool E_CheckOverlap(AActor* pTarget) { return false; };
-	virtual void E_OverlapEvent(AActor* pTarget) {};
-	virtual void E_On() {};
-	virtual void E_Off() {};
+	bool E_SetOwner();
+	bool E_SetAttackMGR();
+	virtual bool E_CheckOverlap(AActor* pTarget);
+	virtual void E_OverlapEvent(AActor* pTarget);
+	virtual void E_On() {}
+	virtual void E_Off() {}
 public:	
+	virtual void E_Init(AA_Character_Base* pOwner, FName strSocket);
+	UFUNCTION(BlueprintPure)
+	int E_GetAttackIndex() { return m_nAttackIndex;	}
+
 	UFUNCTION(BlueprintCallable)
 	void E_OnAttack();
 	UFUNCTION(BlueprintCallable)
 	void E_OffAttack();
 
 	UFUNCTION(BlueprintCallable)
-	void E_OnOff(ECollisionEnabled::Type eEnable = ECollisionEnabled::QueryOnly);
+	void E_OnOfCollisionEnabled(ECollisionEnabled::Type eEnable = ECollisionEnabled::QueryOnly);
+	UFUNCTION(BlueprintPure)
 	FName E_GetCollisionTag() { return "T_Attack"; }
+	UFUNCTION(BlueprintPure)
 	FName E_GetCollisionProfile() { return "P_Attack"; }
 };

@@ -2,12 +2,11 @@
 #include "A_PlayerController.h"
 #include "A_Character_Base.h"
 #include "D_DataTable.h"
-#include "C_MontageMGR.h"
 #include "C_StatusMGR.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UC_SkillMGR::UC_SkillMGR() :
-	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{},
-	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
+	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{},	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
 {
 	PrimaryComponentTick.bCanEverTick  = true;
 	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Skill);
@@ -85,12 +84,27 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	UC_MontageMGR* pMontageMGR = m_pOwner->E_GetMontageMGR();
 	UC_StatusMGR* pStatusMGR= m_pOwner->E_GetStatusMGR();
 
-	// TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
-	//if (m_sSrc.eSkillID == sDst.eSkillID)
-	//{
-	//	sDst.nPlayIndex = m_sSrc.nPlayIndex;
-	//	sDst.nIndex = m_sSrc.nIndex;
-	//}
+	FRotator TargetRot = m_pOwner->GetActorRotation();
+	TargetRot.Pitch = 0.0f;
+	TargetRot.Roll = 0.0f;
+
+	UKismetSystemLibrary::MoveComponentTo(
+		m_pOwner->GetRootComponent(),
+		m_pOwner->GetActorLocation(),
+		TargetRot,
+		false,
+		false,
+		1.0f,
+		false,
+		EMoveComponentAction::Move,
+		FLatentActionInfo()
+	);
+	 // TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
+	// if (m_sSrc.eSkillID == sDst.eSkillID)
+	// {
+	// 	sDst.nPlayIndex = m_sSrc.nPlayIndex;
+	// 	sDst.nIndex = m_sSrc.nIndex;
+	// }
 	bool bResult = pMontageMGR->E_CheckPlayable(eMontageID, sDst.nPlayIndex);
 	if (m_arCoolTime[sDst.nSkillIndex] > 0.0f)
 		bResult = false;
@@ -98,7 +112,7 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	{
 		m_arCoolTime[sDst.nSkillIndex] = m_arMaxTime[sDst.nSkillIndex];
 		E_Copy(m_sSrc, sDst);
-		m_pOwner->E_SubState(FE_StateType::E_IsTravel);
+		m_pOwner->E_GetStateMGR()->E_SubState(FE_StateFlag::E_IsTravel);
 		pStatusMGR->E_AddStatus_Current(eStatusID, fStatus);
 		E_PlayNextMontage();
 	}

@@ -12,6 +12,7 @@ const TCHAR* UD_DataTable::E_GetDefault(E_DefaultPath eID)
 	pResult[E_DefaultPath::E_InputMapping]		= TEXT("/Game/01_Blueprint/Input/IMC_Default");
 	pResult[E_DefaultPath::E_AIAction]			= TEXT("/Game/02_Data/DefaultData/DT-AIAction.DT-AIAction");
 	pResult[E_DefaultPath::E_MainWidget]		= TEXT("/Game/01_Blueprint/Widget/W-Main");
+	pResult[E_DefaultPath::E_Attack]			= TEXT("/Game/02_Data/DefaultData/DT-AttackData.DT-AttackData");
 	return pResult[eID];
 }
 

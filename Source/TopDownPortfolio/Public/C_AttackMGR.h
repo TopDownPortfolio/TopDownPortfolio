@@ -8,41 +8,61 @@
 class  AA_Attacker;
 class AA_Character_Base;
 
+USTRUCT(BlueprintType)
+struct FS_AttackData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf< AA_Attacker> cAttackClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int nAttackIndex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName strSocket;
+};
+
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOPDOWNPORTFOLIO_API UC_AttackMGR : public UActorComponent
 {
 	GENERATED_BODY()
 protected:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FD_ChangeTarget, AA_Character_Base*, pOld, AA_Character_Base*, pNew);
-	TArray<std::list< AA_Attacker*>> m_arAttacker;
-	TSet< AA_Character_Base*> m_setTarget;
+private:
+	TMap<int, TSet< AA_Character_Base*>> m_mapHitted;
+	TMap<int, TArray< AA_Attacker*>> m_mapAttacker;
 	AA_Character_Base* m_pOwner;
-
 	AA_Character_Base* m_pTarget;
 	float m_fMaxTime;
 	float m_fTime;
+public:
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AIActionMGR)
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = AttackMGR)
+	FD_ChangeTarget OnTargetChange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackMGR)
+	UDataTable* m_pDataTable;
 public:
 	UC_AttackMGR();
 
 protected:
 	virtual void BeginPlay() override;
-
-	void E_CollisionEnable(std::list<AA_Attacker*>& arList, ECollisionEnabled::Type eType);
-
+	//void E_CollisionEnable(std::list<AA_Attacker*>& arList, ECollisionEnabled::Type eType);
+	TSet< AA_Character_Base*>* E_GetHitted(int nAttackerIndex);
+	TArray< AA_Attacker*>* E_GetAttacker(int nAttackerIndex);
+	AA_Attacker* E_SpawnAttacker(TSubclassOf< AA_Attacker> cAttacker);
 public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction) override;
-	UPROPERTY(BlueprintCallable,BlueprintAssignable)
-	FD_ChangeTarget OnTargetChange;
-	bool E_AddTarget(AA_Character_Base* pTarget);
-	void E_ResetTarget();
-	void E_GetTargets(TArray<AA_Character_Base*>& arTargets);
-	bool E_IsAlreadyIn(AA_Character_Base* pTarget);
+	bool E_AddHitted(int nAttackerIndex, AA_Character_Base* pTarget);
+	void E_ResetHitted(int nAttackerIndex);
+	void E_GetHittedaArray(int nAttackerIndex, TArray<AA_Character_Base*>& arTargets);
+	bool E_IsAlreadyHitted(int nAttackerIndex, AA_Character_Base* pTarget);
 
-	std::list< AA_Attacker*>* E_GetRegisterAttacker(uint8 nIndex);
 	UFUNCTION(BlueprintCallable)
-	void E_RegisterAttacker(uint8 nIndex, AActor* pAttacker);
+	void E_SpawnAttacker(FS_AttackData sAttckerData,  AA_Attacker*& arSpawnedAttacker);
+
 	UFUNCTION(BlueprintCallable)
-	void E_On(uint8 nIndex);
+	void E_OnAttack(int nAttackerIndex);
 	UFUNCTION(BlueprintCallable)
-	void E_Off(uint8 nIndex);
+	void E_EndAttack(int nAttackerIndex);
+	
 };

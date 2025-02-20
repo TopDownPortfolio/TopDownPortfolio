@@ -2,39 +2,35 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "E_State.h"
-#include "E_CharacterType.h"
+#include "C_StateMGR.h"
+#include "C_MontageMGR.h"
+#include "C_AttackMGR.h"
 #include "A_Character_Base.generated.h"
 
-class UC_MontageMGR;
 class UC_StatusMGR;
-class UC_AttackMGR;
 class UC_BuffMGR;
 class UCapsuleComponent;
-enum class FE_StateType : uint8;
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API AA_Character_Base : public ACharacter
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Montage, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MontageMGR, meta = (AllowPrivateAccess = "true"))
 	UC_MontageMGR* m_pMontageMGR;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = StatusMGR, meta = (AllowPrivateAccess = "true"))
 	UC_StatusMGR* m_pStatusMGR;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Attack, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackMGR, meta = (AllowPrivateAccess = "true"))
 	UC_AttackMGR* m_pAttackMGR;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Damage, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* m_pDamageCollision;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Buff, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuffMGR, meta = (AllowPrivateAccess = "true"))
 	UC_BuffMGR* m_pBuffMGR;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = State, meta = (AllowPrivateAccess = "true", Bitmask, BitmaskEnum = FE_StateType))
-	uint8 m_eState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	TArray<FName> m_arHideBone;
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FE_CharacterType m_eCharacterType;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = StateMGR, meta = (AllowPrivateAccess = "true"))
+	UC_StateMGR* m_pStateMGR;
+	
 public:
 	AA_Character_Base();
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -49,21 +45,6 @@ protected:
 	FName E_GetDamageCollisionProfile() { return "P_Defend"; }
 	void E_HideSocket();
 public:	
-	UFUNCTION(BlueprintPure)
-	FE_CharacterType E_GetCharacterType() { return m_eCharacterType; }
-	UFUNCTION(BlueprintPure)
-	FE_Affiliation E_GetAffiliation(AA_Character_Base* pACharacter);
-
-	UFUNCTION(BlueprintPure)
-	bool E_CheckState(FE_StateType eEnum) { return m_eState & (uint8)eEnum; }
-	bool E_CheckState(uint8 eValue) { return E_CheckState((FE_StateType)eValue); }
-	UFUNCTION(BlueprintCallable)
-	void E_AddState(FE_StateType eEnum);
-	void E_AddState(uint8 eValue) { E_AddState((FE_StateType)eValue); }
-	UFUNCTION(BlueprintCallable)
-	void E_SubState(FE_StateType eEnum);
-	void E_SubState(uint8 eValue) { E_SubState((FE_StateType)eValue); }
-
 	virtual bool ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const override;
 	virtual void E_Attack(AA_Character_Base* pTarget);
 	virtual void E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser);
@@ -74,4 +55,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UC_StatusMGR* E_GetStatusMGR() { return m_pStatusMGR; }
+	UFUNCTION(BlueprintPure)
+	UC_StateMGR* E_GetStateMGR() { return m_pStateMGR; }
 };

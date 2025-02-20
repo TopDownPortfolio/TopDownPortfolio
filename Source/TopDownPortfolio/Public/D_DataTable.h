@@ -18,6 +18,7 @@ public:
 		E_InputMapping,
 		E_AIAction,
 		E_MainWidget,
+		E_Attack,
 		E_EnumMax
 	};
 private:

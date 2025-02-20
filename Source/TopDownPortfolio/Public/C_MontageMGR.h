@@ -18,11 +18,13 @@ protected:
 	FS_MontageData* m_pCurrentData;
 	FS_MontagePlayData m_sPlayData;
 	FE_MontageID m_eCurrentID;
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
-	UDataTable* m_pDataTable;
+
 	bool m_bIsPlaying;
 	bool m_bCanPlay;
 	bool m_bIsInterruptable;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MontageMGR)
+	UDataTable* m_pDataTable;
 public:	
 	UC_MontageMGR();
 

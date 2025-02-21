@@ -23,12 +23,13 @@ private:
 	APlayerController* m_pController;
 	UUserWidget* m_pMain;
 	UPanelWidget* m_pMainPanel;
-	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
-	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
-	int m_nStackCount;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetMGR)
 	TMap<FE_WindowID, TSubclassOf<UUserWidget>> m_mapWindow;
+private:
+	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
+	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
+	int m_nStackCount;
 public:	
 	UC_WidgetMGR();
 

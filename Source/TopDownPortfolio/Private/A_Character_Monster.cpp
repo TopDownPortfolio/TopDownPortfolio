@@ -23,12 +23,12 @@ void AA_Character_Monster::E_Dead()
 	Destroy(true);
 }
 
-void AA_Character_Monster::E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser)
+bool AA_Character_Monster::E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser)
 {
-	AA_Character_Base::E_Defend(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	bool bResult = AA_Character_Base::E_Defend(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	float fHp = m_pStatusMGR->E_GetStatus_Current(FE_StatusID::E_HP);
 	if (fHp > 0)
-		return;
+		return bResult;
 	FTimerHandle sHandle{};
 	GetWorldTimerManager().SetTimer(sHandle, this, &AA_Character_Monster::E_Dead, 1.0f, false, 3.0f);
 	USkeletalMeshComponent* pMesh = GetMesh();
@@ -38,4 +38,5 @@ void AA_Character_Monster::E_Defend(float DamageAmount, FDamageEvent const& Dama
 		pMesh->SetCollisionProfileName("Ragdoll");
 	}
 	GetCapsuleComponent()->DestroyComponent();
+	return bResult;
 }

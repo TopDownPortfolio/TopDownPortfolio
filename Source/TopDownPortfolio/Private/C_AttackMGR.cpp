@@ -2,9 +2,11 @@
 #include "A_Attacker.h"
 #include "A_Character_Base.h"
 #include "D_DataTable.h"
+#include "T_DamageType.h"
+
 
 UC_AttackMGR::UC_AttackMGR() :
-	UActorComponent{}, m_mapHitted{}, m_mapAttacker{}, m_pOwner {}, m_pTarget{}, m_fMaxTime{}, m_fTime{}
+	UActorComponent{}, m_mapHitted{}, m_mapAttacker{}, m_pOwner{}, m_pTarget{}, m_fMaxTime{}, m_fTime{}, m_cDamageType{}, On_TargetChange {}, m_pDataTable{}
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	m_fMaxTime = 5.0f;
@@ -51,10 +53,14 @@ void UC_AttackMGR::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 		m_fTime -= DeltaTime;
 		if (m_fTime < 0)
 		{
-			if (OnTargetChange.IsBound())
-				OnTargetChange.Broadcast(m_pTarget, nullptr);
+			if (On_TargetChange.IsBound())
+				On_TargetChange.Broadcast(m_pTarget, nullptr);
 			m_pTarget = nullptr;
 		}
+	}
+	if (!IsValid( m_pTarget) && On_TargetChange.IsBound())
+	{
+		On_TargetChange.Broadcast(nullptr, nullptr);
 	}
 }
 
@@ -90,6 +96,16 @@ bool UC_AttackMGR::E_IsAlreadyHitted(int nAttackerIndex, AA_Character_Base* pTar
 	if (!pHitted)
 		return false;
 	return pHitted->Find(pTarget) != nullptr;
+}
+
+TSubclassOf<UDamageType> UC_AttackMGR::E_GetDamageType()
+{
+	return m_cDamageType;
+}
+
+void UC_AttackMGR::E_SetDamageType(TSubclassOf<UDamageType> cDamageType)
+{
+	m_cDamageType = cDamageType;
 }
 
 void UC_AttackMGR::E_SpawnAttacker(FS_AttackData sAttckerData, AA_Attacker*& arSpawnedAttacker)
@@ -129,16 +145,18 @@ void UC_AttackMGR::E_EndAttack(int nAttackerIndex)
 		return;
 	for (AA_Character_Base* pTarget: *pHitted)
 	{
-		m_pOwner->E_Attack(pTarget);
-		if (!m_pTarget)
+		bool bAttacker = m_pOwner->E_Attack(pTarget);
+		AA_Character_Base* pNext = m_pTarget;
+		if (bAttacker)
 		{
-			m_pTarget = pTarget;
-			if (OnTargetChange.IsBound())
-				OnTargetChange.Broadcast(nullptr, m_pTarget);
-		}
-		if (m_pTarget == pTarget)
-		{
+			pNext = pTarget;
 			m_fTime = m_fMaxTime;
+			if (!m_pTarget)
+			{
+				if (On_TargetChange.IsBound())
+					On_TargetChange.Broadcast(m_pTarget, pNext);
+				m_pTarget = pNext;
+			}
 		}
 	}
 	pHitted->Reset();

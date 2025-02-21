@@ -6,7 +6,6 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "D_DataTable.h"
 
-
 UC_WidgetMGR::UC_WidgetMGR() :
 	UActorComponent{}, m_pController{}, m_pMain{},m_pMainPanel {}, m_mapWindow{}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
 {
@@ -14,7 +13,6 @@ UC_WidgetMGR::UC_WidgetMGR() :
 	m_mapWindow.FindOrAdd(FE_WindowID::E_Main, UD_DataTable::E_GetDefault_UserWidgetClass(UD_DataTable::E_DefaultPath::E_MainWidget));
 	m_nStackCount = -1;
 }
-
 
 void UC_WidgetMGR::BeginPlay()
 {

@@ -7,6 +7,7 @@
 
 class  AA_Attacker;
 class AA_Character_Base;
+class UT_DamageType;
 
 USTRUCT(BlueprintType)
 struct FS_AttackData : public FTableRowBase
@@ -35,10 +36,11 @@ private:
 	AA_Character_Base* m_pTarget;
 	float m_fMaxTime;
 	float m_fTime;
+	TSubclassOf<UDamageType> m_cDamageType;
 public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AIActionMGR)
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = AttackMGR)
-	FD_ChangeTarget OnTargetChange;
+	FD_ChangeTarget On_TargetChange;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackMGR)
 	UDataTable* m_pDataTable;
 public:
@@ -56,7 +58,9 @@ public:
 	void E_ResetHitted(int nAttackerIndex);
 	void E_GetHittedaArray(int nAttackerIndex, TArray<AA_Character_Base*>& arTargets);
 	bool E_IsAlreadyHitted(int nAttackerIndex, AA_Character_Base* pTarget);
-
+	TSubclassOf<UDamageType> E_GetDamageType();
+	UFUNCTION(BlueprintCallable)
+	 void E_SetDamageType(TSubclassOf<UDamageType> cDamageType);
 	UFUNCTION(BlueprintCallable)
 	void E_SpawnAttacker(FS_AttackData sAttckerData,  AA_Attacker*& arSpawnedAttacker);
 

@@ -8,7 +8,7 @@
 #include "C_StatusMGR.h"
 
 AA_Character_Player::AA_Character_Player() :
-	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_pTarget{}, m_sMp{}
+	AA_Character_Base{}, m_pCameraComponent{}, m_pCameraBoom{}, m_sMp{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -46,15 +46,6 @@ void AA_Character_Player::E_Init_CharacterMovement()
 	pMovement->RotationRate = FRotator(0.f, 640.f, 0.f);
 	pMovement->bConstrainToPlane = true;
 	pMovement->bSnapToPlaneAtStart = true;
-}
-
-void AA_Character_Player::E_Attack(AA_Character_Base* pTarget)
-{
-	AA_Character_Base::E_Attack(pTarget);
-	if (!IsValid(m_pTarget) )
-	{
-		m_pTarget = pTarget;
-	}
 }
 
 void AA_Character_Player::E_Init_Pawn()

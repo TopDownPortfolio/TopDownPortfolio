@@ -18,8 +18,6 @@ AA_Character_Player::AA_Character_Player() :
 	E_Init_CharacterMovement();
 	E_Init_CameraBoom();
 	E_Init_CameraComponent();
-	//m_pWeaponR = CreateDefaultSubobject<UChildActorComponent>(E_GetWeaponRSocketName());
-	//m_pWeaponR->SetupAttachment(GetMesh(), E_GetWeaponRSocketName());
 	m_pStateMGR->E_Init(FE_CharacterType::E_Player);
 }
 
@@ -30,7 +28,6 @@ void AA_Character_Player::OnConstruction(const FTransform& Transform)
 
 void AA_Character_Player::BeginPlay()
 {
-	//E_GetAttackMGR()->E_RegisterAttacker(0, m_pWeaponR->GetChildActor());
 	AA_Character_Base::BeginPlay();
 
 	m_sMp.eBuffID = FE_BuffID::E_Status;

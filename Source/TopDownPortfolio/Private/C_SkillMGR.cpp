@@ -84,22 +84,22 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	UC_MontageMGR* pMontageMGR = m_pOwner->E_GetMontageMGR();
 	UC_StatusMGR* pStatusMGR= m_pOwner->E_GetStatusMGR();
 
-	FRotator TargetRot = m_pOwner->GetActorRotation();
-	TargetRot.Pitch = 0.0f;
-	TargetRot.Roll = 0.0f;
+	//FRotator TargetRot = m_pOwner->GetActorRotation();
+	//TargetRot.Pitch = 0.0f;
+	//TargetRot.Roll = 0.0f;
 
-	UKismetSystemLibrary::MoveComponentTo(
-		m_pOwner->GetRootComponent(),
-		m_pOwner->GetActorLocation(),
-		TargetRot,
-		false,
-		false,
-		1.0f,
-		false,
-		EMoveComponentAction::Move,
-		FLatentActionInfo()
-	);
-	 // TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
+	//UKismetSystemLibrary::MoveComponentTo(
+	//	m_pOwner->GetRootComponent(),
+	//	m_pOwner->GetActorLocation(),
+	//	TargetRot,
+	//	false,
+	//	false,
+	//	1.0f,
+	//	false,
+	//	EMoveComponentAction::Move,
+	//	FLatentActionInfo()
+	//);
+	// // TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
 	// if (m_sSrc.eSkillID == sDst.eSkillID)
 	// {
 	// 	sDst.nPlayIndex = m_sSrc.nPlayIndex;

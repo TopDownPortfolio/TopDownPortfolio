@@ -26,6 +26,11 @@ void AA_Character_Player::OnConstruction(const FTransform& Transform)
 	AA_Character_Base::OnConstruction(Transform);
 }
 
+void AA_Character_Player::E_Test(AActor* pTarget)
+{
+	pTarget->Destroy();
+}
+
 void AA_Character_Player::BeginPlay()
 {
 	AA_Character_Base::BeginPlay();

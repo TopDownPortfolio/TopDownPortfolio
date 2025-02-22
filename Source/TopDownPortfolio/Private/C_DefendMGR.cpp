@@ -10,6 +10,7 @@ UC_DefendMGR::UC_DefendMGR() :
 	UActorComponent{}, m_pOwner{}, m_pStatus{}, m_eDmamgeType{}, m_eDefendType{}, m_eApplyStatus{}, On_StartDamage{}, On_EndDamage{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	m_eApplyStatus = FE_ApplyStatus::E_Hp;
 }
 
 

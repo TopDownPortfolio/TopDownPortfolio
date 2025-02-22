@@ -19,10 +19,12 @@ private:
 		E_EnumMax = 5
 	};
 	AA_Character_Base* m_pOwner;
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
-	UDataTable* m_pDataTable;
+	
 	TMap<int, FS_AIActionData*> m_mapActionData;
 	std::priority_queue< FS_AIActionData*, std::vector<FS_AIActionData*>, FS_AIActionData> m_pq;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AIActionMGR)
+	UDataTable* m_pDataTable;
 public:	
 	UC_AIActionMGR();
 

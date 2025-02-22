@@ -11,9 +11,14 @@ class TOPDOWNPORTFOLIO_API AA_Character_Monster : public AA_Character_Base
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = AIAction, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AIActionMGR, meta = (AllowPrivateAccess = "true"))
 	UC_AIActionMGR* m_pAIAction;
+protected:
+	void E_Dead();
+
 public:
+
+	virtual bool E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser) override;
 	AA_Character_Monster();
 	virtual void OnConstruction(const FTransform& Transform) override;
 

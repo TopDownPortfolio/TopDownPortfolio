@@ -7,6 +7,7 @@
 #include "C_SkillMGR.generated.h"
 
 class AA_Character_Base;
+class UDataTable;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOPDOWNPORTFOLIO_API UC_SkillMGR : public UActorComponent
@@ -23,10 +24,11 @@ protected:
 	};
 protected:
 	AA_Character_Base* m_pOwner;
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillMGR)
 	UDataTable* m_pDataTable;
+protected:
 	TArray<FS_SkillData*> m_arSkillData;
-
 	TArray<int> m_arIndex[(uint8)FE_SkillID::E_EnumMAX];
 	S_CurrentData m_sSrc;
 	float m_arMaxTime[(uint8)FE_SkillID::E_EnumMAX];
@@ -36,7 +38,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	void E_Copy(S_CurrentData& sSrc, S_CurrentData& sDst)
 	{
 		sSrc.eSkillID = sDst.eSkillID;
@@ -52,7 +53,6 @@ public:
 	float E_MaxCoolTime(FE_SkillID eSkillID) { return m_arMaxTime[(uint8)eSkillID]; }
 	UFUNCTION(BlueprintPure)
 	float E_CurrentCoolTime(FE_SkillID eSkillID) { return m_arCoolTime[(uint8)eSkillID]; }
-
 	UFUNCTION(BlueprintCallable)
 	void E_SetSkillIndex(FE_SkillID eSkillID, int nIndex, int nValue);
 	UFUNCTION(BlueprintCallable)
@@ -61,7 +61,6 @@ public:
 	bool E_PlayNextMontage();
 	UFUNCTION(BlueprintCallable)
 	bool E_SetNextMontage();
-
 	UPROPERTY(BlueprintAssignable)
 	FDL_OnAction On_ActionActive;
 };

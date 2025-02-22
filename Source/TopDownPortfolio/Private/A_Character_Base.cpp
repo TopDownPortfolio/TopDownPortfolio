@@ -1,16 +1,12 @@
 #include "A_Character_Base.h"
 #include "Engine/DamageEvents.h"
 #include "Components/CapsuleComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Perception/AISenseConfig_Damage.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "C_BuffMGR.h"
 #include "C_StatusMGR.h"
-#include "C_AttackMGR.h"
-#include "C_MontageMGR.h"
 
 AA_Character_Base::AA_Character_Base() :
-	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_eState{}, m_arHideBone{}, m_eCharacterType{}
+	ACharacter{}, m_pMontageMGR{}, m_pStatusMGR{}, m_pAttackMGR{}, m_pDamageCollision{}, m_pBuffMGR{}, m_arHideBone{}, m_pStateMGR{}, m_pDefendMGR{}
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
@@ -24,6 +20,8 @@ AA_Character_Base::AA_Character_Base() :
 	m_pDamageCollision->SetCollisionProfileName(E_GetDamageCollisionProfile());
 
 	m_pBuffMGR = CreateDefaultSubobject<UC_BuffMGR>("BuffMGR");
+	m_pStateMGR= CreateDefaultSubobject<UC_StateMGR>("StateMGR");
+	m_pDefendMGR = CreateDefaultSubobject<UC_DefendMGR>("DefendMGR");
 }
 
 void AA_Character_Base::OnConstruction(const FTransform& Transform)
@@ -38,8 +36,8 @@ void AA_Character_Base::OnConstruction(const FTransform& Transform)
 void AA_Character_Base::BeginPlay()
 {
 	Super::BeginPlay();
-	E_AddState(FE_StateType::E_IsTravel);
 	E_HideSocket();
+	E_GetDefendMGR()->On_StartDamage.AddDynamic(this, &AA_Character_Base::E_SwitchMode);
 }
 
 void AA_Character_Base::E_RegisterComponent(UActorComponent* pComponent)
@@ -57,68 +55,26 @@ void AA_Character_Base::E_HideSocket()
 	}
 }
 
-FE_Affiliation AA_Character_Base::E_GetAffiliation(AA_Character_Base* pACharacter)
+void AA_Character_Base::E_SwitchMode()
 {
-	FE_Affiliation eReulst = FE_Affiliation::E_Neutral;
-	if (pACharacter)
-	{
-		eReulst = C_CharacterType::E_GetAffiliation(pACharacter->E_GetCharacterType(), E_GetCharacterType());
-	}
-	return eReulst;
+	m_pStateMGR->E_SubState(FE_StateFlag::E_IsTravel);
+	m_pStateMGR->E_AddState(FE_StateFlag::E_IsHitted);
 }
 
-void AA_Character_Base::E_AddState(FE_StateType eEnum)
+bool AA_Character_Base::E_Attack(AA_Character_Base* pTarget)
 {
-	m_eState |= (uint8)eEnum;
-}
-
-void AA_Character_Base::E_SubState(FE_StateType eEnum)
-{
-	if (E_CheckState(eEnum))
-		m_eState ^= (uint8)eEnum;
-	// or로 추가 and로 확인 xor 로 제거
-	// 주의 : xor를 잘못 사용하면 추가가 되버림 if로 확인하는걸 추천
-}
-
-
-bool AA_Character_Base::ShouldTakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) const
-{	
-	bool bResult = ACharacter::ShouldTakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
-	return bResult;
-}
-
-void AA_Character_Base::E_Attack(AA_Character_Base* pTarget)
-{
-	FE_Affiliation eAffiliation = C_CharacterType::E_GetAffiliation(pTarget->E_GetCharacterType(), E_GetCharacterType());
+	FE_Affiliation eAffiliation = m_pStateMGR->E_GetAffiliation(pTarget);
 	if (eAffiliation != FE_Affiliation::E_Enemy)
-		return;
+		return false;
 	float fDamage = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_ATTACK);
 	FDamageEvent fDamageEvent{};
-	pTarget->E_Defend(fDamage, fDamageEvent, GetController(), this);
+	fDamageEvent.DamageTypeClass = E_GetAttackMGR()->E_GetDamageType();
+	return 	pTarget->E_Defend(fDamage, fDamageEvent, GetController(), this);
 }
 
-void AA_Character_Base::E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser)
+bool AA_Character_Base::E_Defend(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AA_Character_Base* DamageCauser)
 {
-	if (!CanBeDamaged())
-		return;
-
-	E_SubState(FE_StateType::E_IsTravel);
-	float fDamage = DamageAmount;
-	float fDefend = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_DEFEND);
-	if (fDefend > 0.0f)
-		fDamage -= fDefend;
-	if (fDamage < 0.0f)
-		fDamage = 0.0f;
-	else
-	{
-		float fHP = E_GetStatusMGR()->E_GetStatus_Current(FE_StatusID::E_HP);
-		if (fHP - fDamage < 0.0f)
-			fDamage = fHP;
-		E_GetStatusMGR()->E_AddStatus_Current(FE_StatusID::E_HP, -fDamage);
-	}
-
-	//TakeDamage(fDamage, DamageEvent, EventInstigator, DamageCauser);
-	UGameplayStatics::ApplyDamage(this, fDamage, EventInstigator, DamageCauser, UDamageType::StaticClass());
-	UAISense_Damage::ReportDamageEvent(GetWorld(), this, DamageCauser, fDamage, GetActorLocation(), FVector::Zero());
+	if (!E_GetDefendMGR())
+		return false;
+	return E_GetDefendMGR()->E_Defend(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }

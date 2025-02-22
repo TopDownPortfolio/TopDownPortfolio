@@ -26,11 +26,13 @@ class TOPDOWNPORTFOLIO_API UC_InputActionMGR : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY(EditDefaultsOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
 	TMap<FE_InputActionID, FS_InputActionData> m_mapInputAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
 	UInputMappingContext* m_pDefaultMappingContext;
-	UPROPERTY(VisibleAnywhere,  Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = InputActionMGR)
 	UO_InputAction* m_arInputAction[(uint8)FE_InputActionID::E_EnumMAX];
 public:
 	UC_InputActionMGR();

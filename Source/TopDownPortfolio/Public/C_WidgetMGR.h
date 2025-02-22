@@ -21,12 +21,12 @@ protected:
 	};
 private:
 	APlayerController* m_pController;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TSubclassOf< UUserWidget> m_cMain;
 	UUserWidget* m_pMain;
 	UPanelWidget* m_pMainPanel;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetMGR)
 	TMap<FE_WindowID, TSubclassOf<UUserWidget>> m_mapWindow;
+private:
 	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
 	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
 	int m_nStackCount;

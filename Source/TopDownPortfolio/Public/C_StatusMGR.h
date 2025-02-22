@@ -38,23 +38,20 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOPDOWNPORTFOLIO_API UC_StatusMGR : public UActorComponent
 {
 	GENERATED_BODY()
-protected:
-	UPROPERTY(EditDefaultsOnly, Category = Data, meta = (AllowPrivateAccess = "true"))
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = StatusMGR)
 	UDataTable* m_pDataTable;
+protected:
 	E_Status m_arStatus[(uint8)FE_StatusID::E_EnumMAX];
-
 public:	
 	UC_StatusMGR();
-
 protected:
 	virtual void BeginPlay() override;
-
 protected:
 	E_Status* E_GetClass(FE_StatusID eID);
 	float E_GetStatus(FE_StatusID eID, FE_StatusType eType);
 	void E_SetStatus(FE_StatusID eID, FE_StatusType eType, float fValue);
 	void E_AddStatus(FE_StatusID eID, FE_StatusType eType, float fValue);
-
 public:	
 	void E_Init_Begin();
 	UFUNCTION(BlueprintPure)

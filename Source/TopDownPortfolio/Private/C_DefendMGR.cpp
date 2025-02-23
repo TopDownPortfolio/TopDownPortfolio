@@ -63,16 +63,14 @@ void UC_DefendMGR::E_DamageEvent(float fDamageAmount, FDamageEvent const& Damage
 {
 	if (!DamageEvent.DamageTypeClass)
 		return;
-	UT_DamageType* cClass = Cast< UT_DamageType>(DamageEvent.DamageTypeClass->StaticClass());
-	if (!cClass)
+	UT_DamageType const * pDamageType = Cast< UT_DamageType>(DamageEvent.DamageTypeClass->GetDefaultObject());
+	if (!pDamageType)
 		return;
-	TSubclassOf<UT_DamageType> cDamgeType{};
-	cDamgeType = DamageEvent.DamageTypeClass;
-	UT_DamageType const* const pDamageType = cDamgeType.GetDefaultObject();
-	m_eDmamgeType = pDamageType->eDamageEventType;
+	//TSubclassOf<UT_DamageType> cDamgeType{};
+	//cDamgeType = DamageEvent.DamageTypeClass;
 	if(On_EndDamage.IsBound())
-	{
-		On_EndDamage.Broadcast(fDamageAmount, m_eDmamgeType);
+	{	
+		On_EndDamage.Broadcast(fDamageAmount, pDamageType->eDamageEventType);
 	}
 }
 

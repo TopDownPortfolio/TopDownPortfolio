@@ -21,14 +21,22 @@ private:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interaction, meta = (AllowPrivateAccess = "true"))
 	bool m_bDetectTogle;
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interaction, meta = (AllowPrivateAccess = "true"))
+	bool m_bSelectableTogle;
+protected:
 	UPROPERTY(VisibleAnywhere, Category = Interaction, meta = (AllowPrivateAccess = "true"))
 	bool m_bDetected;
+	UPROPERTY(VisibleAnywhere, Category = Interaction, meta = (AllowPrivateAccess = "true"))
+	bool m_bSelected;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interaction, meta = (AllowPrivateAccess = "true"))
 	bool m_bAutoBeginInteraction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interaction, meta = (AllowPrivateAccess = "true"))
 	bool m_bAutoEndInteraction;
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interaction, meta = (AllowPrivateAccess = "true"))
+	bool m_bInteractionResult;
+
 public:
 	UC_InteractionReceive();
 	//virtual void BeginPlay() override;
@@ -41,19 +49,33 @@ private:
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	bool E_BeginEvent_Detect(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	virtual bool E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) { return true; }
 	UFUNCTION(BlueprintImplementableEvent)
 	bool E_EndEvent_Detect(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_BeginEvent_Interaction(AActor* pInitiator, UActorComponent* pInteractionCompo);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_EndEvent_Interaction(AActor* pInitiator, UActorComponent* pInteractionCompo);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_InteractionEvent(AActor* pInitiator);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_SelectedOnEvent(AActor* pInitiator, UActorComponent* pInteractionCompo);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_SelectedOffEvent(AActor* pInitiator, UActorComponent* pInteractionCompo);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_InteractionStart(AActor* pInitiator);
+	UFUNCTION(BlueprintImplementableEvent)
+	bool E_InteractionEnd(AActor* pInitiator);
+
+	virtual bool E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) { return true; }
 	virtual bool E_EndEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) { return true; }
-	UFUNCTION(BlueprintImplementableEvent)
-	bool E_BeginEvent_Interaction(AActor* pSrc, UActorComponent* pManageCompo);
-	virtual bool E_BeginEvent_Interaction_Implementation(AActor* pSrc, UActorComponent* pManageCompo) { return true; }
-	UFUNCTION(BlueprintImplementableEvent)
-	bool E_EndEvent_Interaction(AActor* pSrc, UActorComponent* pManageCompo);
-	virtual bool E_EndEvent_Interaction_Implementation(AActor* pSrc, UActorComponent* pManageCompo) { return true; }
+	virtual bool E_BeginEvent_Interaction_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) { return true; }
+	virtual bool E_EndEvent_Interaction_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) { return true; }
+	virtual bool E_InteractionEvent_Implementation(AActor* pInitiator) { return true; }
+	virtual bool E_SelectedOnEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) { return true; }
+	virtual bool E_SelectedOffEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) { return true; }
+	virtual bool E_InteractionStart_Implementation(AActor* pInitiator) { return true; }
+	virtual bool E_InteractionEnd_Implementation(AActor* pInitiator)  { return true; }
 public:
-	UFUNCTION(BlueprintCallable)
-	void E_OnOffCollisions(bool bOnOff);
 	UFUNCTION(BlueprintPure)
 	FName E_GetCollisionTag() { return "T_InteractionReceive"; }
 	UFUNCTION(BlueprintPure)
@@ -61,15 +83,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void E_BindCollisionOverlaps(UPrimitiveComponent* pCollision);
 	UFUNCTION(BlueprintCallable)
-	bool E_BeginInteractionEvent(AActor* pSrc, UActorComponent* pManageCompo);
+	void E_OnOffCollisions(bool bOnOff);
 	UFUNCTION(BlueprintCallable)
-	bool E_EndInteractionEvent(AActor* pSrc, UActorComponent* pManageCompo);
+	bool E_Interaction(AActor* pInitiator);
+	UFUNCTION(BlueprintCallable)
+	bool E_Selected(AActor* pInitiator, UActorComponent* pInteractionCompo, bool bOnOffDettected);
 };
-
-// 상속 모음
-//protected:
-// virtual bool E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) { return true; }
-// virtual bool E_EndEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) { return true; }
-// 
-// virtual bool E_BeginEvent_Interaction_Implementation(AActor* pSrc, UActorComponent* pManageCompo) { return false; }
-// virtual bool E_EndEvent_Interaction_Implementation(AActor* pSrc, UActorComponent* pManageCompo) { return false; }

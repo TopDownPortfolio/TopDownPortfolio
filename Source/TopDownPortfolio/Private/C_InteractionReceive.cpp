@@ -1,7 +1,7 @@
 #include "C_InteractionReceive.h"
 
 UC_InteractionReceive::UC_InteractionReceive() : 
-	UActorComponent{}, m_arCollsion{}, m_bDetectTogle{}, m_bDetected{}, m_bAutoBeginInteraction{}, m_bAutoEndInteraction{}
+	UActorComponent{}, m_arCollsion{}, m_bDetectTogle{}, m_bSelectableTogle{}, m_bDetected{}, m_bSelected{}, m_bAutoBeginInteraction{}, m_bAutoEndInteraction{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	m_bAutoBeginInteraction = false;
@@ -28,7 +28,7 @@ void UC_InteractionReceive::E_OnOffCollisions(bool bOnOff)
 
 void UC_InteractionReceive::E_BindCollisionOverlaps(UPrimitiveComponent* pCollision)
 {
-	if (m_arCollsion.Num() >= E_CollisionSize::E_MaxSize)
+	if (m_arCollsion.Num() >= E_CollisionSize::E_MaxSize || !pCollision)
 		return;
 	m_arCollsion.Add(pCollision);
 	pCollision->ComponentTags.Add(E_GetCollisionTag());
@@ -46,7 +46,7 @@ void UC_InteractionReceive::E_BeginOverlap(UPrimitiveComponent* OverlappedCompon
 	}
 	if (m_bAutoBeginInteraction)
 	{
-		E_BeginEvent_Interaction_Implementation(OtherActor, OtherComp);
+		m_bInteractionResult = E_BeginEvent_Interaction_Implementation(OtherActor, OtherComp);
 	}
 }
 
@@ -59,20 +59,29 @@ void UC_InteractionReceive::E_EndOverlap(UPrimitiveComponent* OverlappedComponen
 	}
 	if (m_bAutoEndInteraction)
 	{
-		E_EndEvent_Interaction_Implementation(OtherActor, OtherComp);
+		m_bInteractionResult = E_EndEvent_Interaction_Implementation(OtherActor, OtherComp);
 	}
 }
 
-bool UC_InteractionReceive::E_BeginInteractionEvent(AActor* pSrc, UActorComponent* pManageCompo)
-{
-	if (m_bAutoBeginInteraction)
-		return false;
-	return E_BeginEvent_Interaction_Implementation(pSrc, pManageCompo);
-}
-
-bool UC_InteractionReceive::E_EndInteractionEvent(AActor* pSrc, UActorComponent* pManageCompo)
+bool UC_InteractionReceive::E_Interaction(AActor* pInitiator)
 {
 	if (m_bAutoEndInteraction)
 		return false;
-	return E_EndEvent_Interaction_Implementation(pSrc, pManageCompo);
+	E_InteractionStart_Implementation(pInitiator);
+	m_bInteractionResult = E_InteractionEvent_Implementation(pInitiator);
+	E_InteractionEnd_Implementation(pInitiator);
+	return m_bInteractionResult;
+}
+
+bool UC_InteractionReceive::E_Selected(AActor* pInitiator, UActorComponent* pInteractionCompo, bool bOnOffDettected)
+{
+	if (!m_bSelectableTogle)
+		return false;
+
+	m_bSelected = bOnOffDettected;
+	if (bOnOffDettected)
+	{
+		return E_SelectedOnEvent_Implementation(pInitiator, pInteractionCompo);
+	}
+	return E_SelectedOffEvent_Implementation(pInitiator, pInteractionCompo);
 }

@@ -1,23 +1,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "A_Interaction.h"
 #include "E_Item.h"
-#include "C_InteractionReceive_Item.h"
-#include "A_Item.generated.h"
+#include "A_Interaction_Item.generated.h"
 
-class UStaticMeshComponent;
 class UCapsuleComponent;
+class UStaticMeshComponent;
+class UC_InteractionReceive_Item;
 
-UCLASS(BlueprintType)
-class TOPDOWNPORTFOLIO_API AA_Item : public AActor
+UCLASS()
+class TOPDOWNPORTFOLIO_API AA_Interaction_Item : public AA_Interaction
 {
 	GENERATED_BODY()
 private:
 	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
-	USceneComponent* m_pRoot;
-	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
-	UC_InteractionReceive_Item* m_pInteractionReceive;
+	UC_InteractionReceive_Item* m_pInteractionReceiveItem;
 	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* m_pMeshComponent;
 	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
@@ -26,12 +24,11 @@ private:
 	int nItemID;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
 	int nCount;
-public:	
-	AA_Item();
+public:
+	AA_Interaction_Item();
 	virtual void OnConstruction(const FTransform& Transform) override;
 protected:
 	virtual void BeginPlay() override;
-public:	
-	UFUNCTION(BlueprintPure)
-	 void E_GetInteractionReceive(UC_InteractionReceive*& InteractionReceive) { InteractionReceive = m_pInteractionReceive; }
+public:
+	UStaticMeshComponent* E_GetStaticMeshComponent() { return m_pMeshComponent; }
 };

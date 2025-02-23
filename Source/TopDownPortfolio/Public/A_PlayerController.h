@@ -10,6 +10,7 @@
 class UNiagaraSystem;
 enum class FE_SkillID :uint8;
 class UC_SkillMGR;
+class UC_Inventory;
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API AA_PlayerController : public APlayerController
@@ -26,7 +27,8 @@ protected:
 	UNiagaraSystem* FXCursor;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillMGR, meta = (AllowPrivateAccess = "true"))
 	UC_SkillMGR* m_pSkillMGR;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SkillMGR, meta = (AllowPrivateAccess = "true"))
+	UC_Inventory* m_pInventory;
 public:
 	AA_PlayerController();
 
@@ -50,8 +52,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	UC_InputActionMGR* E_GetInputActionMGR() { return m_pInputActionMGR; }
 	UFUNCTION(BlueprintPure)
-
 	UC_SkillMGR* E_GetSkillMGR() { return m_pSkillMGR; }
+	UFUNCTION(BlueprintPure)
+	UC_Inventory* E_GetInventory() { return m_pInventory; }
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void E_Action(FE_SkillID eID);
 	virtual void E_Action_Implementation(FE_SkillID eID);

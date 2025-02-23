@@ -33,11 +33,6 @@ void AA_Character_Player::OnConstruction(const FTransform& Transform)
 	E_RegisterComponent(m_pInteractionInitiator);
 }
 
-void AA_Character_Player::E_Test(AActor* pTarget)
-{
-	pTarget->Destroy();
-}
-
 void AA_Character_Player::BeginPlay()
 {
 	AA_Character_Base::BeginPlay();

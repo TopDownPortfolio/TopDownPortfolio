@@ -5,6 +5,7 @@
 #include "C_InteractionReceive_Item.generated.h"
 
 class UStaticMeshComponent;
+class AA_Interaction_Item;
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API UC_InteractionReceive_Item : public UC_InteractionReceive
@@ -16,16 +17,18 @@ protected:
 	UMaterialInterface* m_pDetected;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	UMaterialInterface* m_pSelected;
+	AA_Interaction_Item* m_pItem;
 public:
 	UC_InteractionReceive_Item();
 
 private:
 	void E_SetMaterialInterface(UMaterialInterface* pMaterial);
 protected:
-virtual void BeginPlay() override;
-virtual bool E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-virtual bool E_EndEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
-virtual bool E_InteractionEvent_Implementation(AActor* pInitiator) override;
-virtual bool E_SelectedOnEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) override;
-virtual bool E_SelectedOffEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) override;
+	virtual void BeginPlay() override;
+	virtual bool E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+	virtual bool E_EndEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
+	virtual bool E_InteractionEvent_Implementation(AActor* pInitiator) override;
+	virtual bool E_SelectedOnEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) override;
+	virtual bool E_SelectedOffEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo) override;
+	virtual bool E_InteractionEnd_Implementation(AActor* pInitiator) override;
 };

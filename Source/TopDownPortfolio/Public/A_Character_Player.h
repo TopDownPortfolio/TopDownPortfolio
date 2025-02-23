@@ -33,7 +33,7 @@ public:
 	FORCEINLINE UCameraComponent* GetTopDownCameraComponent() const { return m_pCameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return m_pCameraBoom; }
 	virtual void OnConstruction(const FTransform& Transform) override;
-	void E_Test(AActor* pTarget);
+	//void E_Test(AActor* pTarget);
 protected:
 	virtual void BeginPlay() override;
 	FName E_GetWeaponRSocketName() { return "Weapon_r"; }

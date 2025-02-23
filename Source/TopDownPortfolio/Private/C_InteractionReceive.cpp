@@ -65,8 +65,6 @@ void UC_InteractionReceive::E_EndOverlap(UPrimitiveComponent* OverlappedComponen
 
 bool UC_InteractionReceive::E_Interaction(AActor* pInitiator)
 {
-	if (m_bAutoEndInteraction)
-		return false;
 	E_InteractionStart_Implementation(pInitiator);
 	m_bInteractionResult = E_InteractionEvent_Implementation(pInitiator);
 	E_InteractionEnd_Implementation(pInitiator);

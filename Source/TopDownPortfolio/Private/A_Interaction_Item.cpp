@@ -4,7 +4,7 @@
 #include "C_InteractionReceive_Item.h"
 
 AA_Interaction_Item::AA_Interaction_Item() :
-	AA_Interaction{}, m_pMeshComponent{}, m_pCollisionComponent{}, nItemID{}, nCount{}
+	AA_Interaction{}, m_pMeshComponent{}, m_pCollisionComponent{}, m_nItemID{}, m_nCount{}
 {
 	PrimaryActorTick.bCanEverTick = false;
 	m_pRoot = CreateDefaultSubobject<USceneComponent>("Root");

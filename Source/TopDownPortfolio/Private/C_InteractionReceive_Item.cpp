@@ -1,10 +1,11 @@
 #include "C_InteractionReceive_Item.h"
-#include "A_Character_Player.h"
+#include "A_PlayerController.h"
 #include "A_Interaction_Item.h"
+#include "C_Inventory.h"
 #include "Components/StaticMeshComponent.h"
 
 UC_InteractionReceive_Item::UC_InteractionReceive_Item() : 
-	UC_InteractionReceive{}, m_pStaticMesh{}, m_pDetected{}, m_pSelected{}
+	UC_InteractionReceive{}, m_pStaticMesh{}, m_pDetected{}, m_pSelected{}, m_pItem{}
 {
 	m_bSelectableTogle = true;
 	m_bDetectTogle = true;
@@ -19,35 +20,36 @@ void UC_InteractionReceive_Item::E_SetMaterialInterface(UMaterialInterface* pMat
 void UC_InteractionReceive_Item::BeginPlay()
 {
 	UC_InteractionReceive::BeginPlay();
-	AA_Interaction_Item* pItem = Cast<AA_Interaction_Item>(GetOwner());
-	if (!pItem)
+	m_pItem = Cast<AA_Interaction_Item>(GetOwner());
+	if (!m_pItem)
 	{
 		DestroyComponent();
 		return;
 	}
-	m_pStaticMesh = pItem->E_GetStaticMeshComponent();
+	m_pStaticMesh = m_pItem->E_GetStaticMeshComponent();
 }
 
 bool UC_InteractionReceive_Item::E_BeginEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!m_bSelected)
 		E_SetMaterialInterface(m_pDetected);
-	return true;
+	return !m_bSelected;
 }
 
 bool UC_InteractionReceive_Item::E_EndEvent_Detect_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	E_SetMaterialInterface(nullptr);
-	return false;
+	return true;
 }
 
 bool UC_InteractionReceive_Item::E_InteractionEvent_Implementation(AActor* pInitiator)
 {
-	AA_Character_Player* pPlayer = Cast < AA_Character_Player>(pInitiator);
+	APawn* pPlayer = Cast < APawn>(pInitiator);
 	if (!pPlayer)
 		return false;
-	pPlayer->E_Test(GetOwner());
-	return true;
+	AA_PlayerController* pController = Cast< AA_PlayerController>(pPlayer->GetController());
+	UC_Inventory* pInventroy = pController->E_GetInventory();
+	return pInventroy->E_PushItem(m_pItem->E_GetItemID(), m_pItem->E_GetItemCount());
 }
 
 bool UC_InteractionReceive_Item::E_SelectedOnEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo)
@@ -62,5 +64,14 @@ bool UC_InteractionReceive_Item::E_SelectedOffEvent_Implementation(AActor* pInit
 	if (m_bDetected)
 		pNext = m_pDetected;
 	E_SetMaterialInterface(pNext);
-	return true;
+	return m_bDetected;
+}
+
+bool UC_InteractionReceive_Item::E_InteractionEnd_Implementation(AActor* pInitiator)
+{
+	if (m_bInteractionResult)
+	{
+		m_pItem->Destroy();
+	}
+	return m_bInteractionResult;
 }

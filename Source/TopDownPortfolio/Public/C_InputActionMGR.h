@@ -16,9 +16,13 @@ struct FS_InputActionData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FE_InputActionID eInputActionID;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	UInputAction* pInputAction;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf< UO_InputAction> cClass;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FKey sKey;
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -29,7 +33,8 @@ private:
 
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
-	TMap<FE_InputActionID, FS_InputActionData> m_mapInputAction;
+	UDataTable* m_pDataTable;
+	TArray<FS_InputActionData*> m_arrInputAction;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
 	UInputMappingContext* m_pDefaultMappingContext;
 	UPROPERTY(VisibleAnywhere, Category = InputActionMGR)

@@ -5,7 +5,7 @@ UC_StatusMGR::UC_StatusMGR() :
 	UActorComponent{}, m_pDataTable{}, m_arStatus{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Status);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_Status);
 	for (uint8 i = 0; i < (uint8)FE_StatusID::E_EnumMAX; i++)
 	{
 		E_GetClass((FE_StatusID)i)->E_SetID((FE_StatusID)i);

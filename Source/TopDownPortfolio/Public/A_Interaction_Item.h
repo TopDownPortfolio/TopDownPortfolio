@@ -20,7 +20,7 @@ private:
 	UStaticMeshComponent* m_pMeshComponent;
 	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* m_pCollisionComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true", ClampMin = "0"))
 	int m_nItemID;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
 	int m_nCount;

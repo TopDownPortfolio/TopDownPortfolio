@@ -15,6 +15,7 @@ AA_Interaction_Item::AA_Interaction_Item() :
 	m_pCollisionComponent = CreateDefaultSubobject< UCapsuleComponent>("ItemCollision");
 	m_pCollisionComponent->SetupAttachment(m_pRoot);
 	m_pInteractionReceiveItem = CreateDefaultSubobject<UC_InteractionReceive_Item>("InteractionReceive");
+	m_nCount = 1;
 }
 
 void AA_Interaction_Item::OnConstruction(const FTransform& Transform)

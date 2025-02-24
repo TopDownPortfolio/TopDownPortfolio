@@ -10,7 +10,7 @@ UC_AttackMGR::UC_AttackMGR() :
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	m_fMaxTime = 5.0f;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Attack);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_Attack);
 }
 
 void UC_AttackMGR::BeginPlay()

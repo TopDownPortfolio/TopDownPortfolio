@@ -2,7 +2,7 @@
 #include "A_Interaction.h"
 
 UC_InteractionInitiator::UC_InteractionInitiator() :
-	UActorComponent{}, m_arCollsion{}, m_setInteractionReceive{}, m_queReceive{}, m_pFirst{}
+	UActorComponent{}, m_arCollsion{}, m_setInteractionReceive{}, m_listReceive{}, m_pFirst{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
@@ -34,7 +34,7 @@ bool UC_InteractionInitiator::E_AddActor(AA_Interaction* pInteraction)
 	m_setInteractionReceive.FindOrAdd(pInteraction, &bResult);
 	if (!bResult)
 	{
-		m_queReceive.push(pInteraction);
+		m_listReceive.push_back(pInteraction);
 		E_SetFirst();
 	}
 	return bResult;
@@ -43,20 +43,19 @@ bool UC_InteractionInitiator::E_AddActor(AA_Interaction* pInteraction)
 bool UC_InteractionInitiator::E_RemoveActor(AA_Interaction* pInteraction)
 {
 	m_setInteractionReceive.Remove(pInteraction);
-	m_queReceive.pop();
-	if (pInteraction == m_pFirst)
-	{
-		E_SetFirst();
-	}
+	m_listReceive.remove(pInteraction);
+	E_SetFirst();
 	return true;
 }
 
 bool UC_InteractionInitiator::E_SetFirst()
 {
-	TSet<AA_Interaction*>::TRangedForIterator First = m_setInteractionReceive.begin();
+	std::list < AA_Interaction*>::iterator iter = m_listReceive.begin();
 	AA_Interaction* pNewFirst{};
-	if (First != m_setInteractionReceive.end())
-		pNewFirst = *First;
+	if (iter != m_listReceive.end())
+		pNewFirst = *iter;
+	if (m_pFirst == pNewFirst)
+		return false;
 	UC_InteractionReceive* pReceive{};
 	if (m_pFirst)
 	{
@@ -70,7 +69,6 @@ bool UC_InteractionInitiator::E_SetFirst()
 		if (pReceive)
 			pReceive->E_Selected(GetOwner(), this, true);
 	}
-
 	m_pFirst = pNewFirst;
 	return m_pFirst != nullptr;
 }
@@ -83,6 +81,20 @@ AA_Interaction* UC_InteractionInitiator::E_GetInteractionActor(AActor* pInteract
 AA_Interaction* UC_InteractionInitiator::E_GetFirst()
 {
 	return  m_pFirst;
+}
+
+bool UC_InteractionInitiator::E_ChangeFirst()
+{
+	std::list < AA_Interaction*>::iterator iter = m_listReceive.begin();
+	AA_Interaction* pFront{};
+	if (iter != m_listReceive.end() && *iter != m_pFirst)
+	{
+		pFront = *iter;
+		m_listReceive.pop_front();
+		m_listReceive.push_back(pFront);
+		E_SetFirst();
+	}
+	return pFront != nullptr;
 }
 
 bool UC_InteractionInitiator::E_Interaction(AA_Interaction*& pInteractedActor)

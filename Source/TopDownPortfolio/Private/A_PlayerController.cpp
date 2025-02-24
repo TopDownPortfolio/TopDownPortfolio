@@ -44,6 +44,7 @@ FE_WindowID AA_PlayerController::E_GetWidgetID(FE_InputActionID eID)
 {
 	FE_WindowID arSkillID[(uint8)FE_InputActionID::E_EnumMAX] = { FE_WindowID::E_NONE };
 	arSkillID[(uint8)FE_InputActionID::E_SkillWindow] = FE_WindowID::E_Skill;
+	arSkillID[(uint8)FE_InputActionID::E_Inventory] = FE_WindowID::E_Inventory;
 	return arSkillID[(uint8)eID];
 }
 

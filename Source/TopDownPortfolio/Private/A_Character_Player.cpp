@@ -66,7 +66,7 @@ void AA_Character_Player::E_Init_CameraBoom()
 	m_pCameraBoom = pCameraBoom;
 	pCameraBoom->SetupAttachment(RootComponent);
 	pCameraBoom->SetUsingAbsoluteRotation(true);
-	pCameraBoom->TargetArmLength = 800.f;
+	pCameraBoom->TargetArmLength = 1300.f;
 	pCameraBoom->SetRelativeRotation(FRotator(-50.f, 0.f, 0.f));
 	pCameraBoom->bDoCollisionTest = false; 
 }

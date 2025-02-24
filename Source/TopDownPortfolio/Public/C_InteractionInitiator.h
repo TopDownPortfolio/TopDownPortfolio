@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include <queue>
+#include <list>
 #include "C_InteractionInitiator.generated.h"
 
 class AA_Interaction;
@@ -19,7 +19,7 @@ private:
 private:
 	TArray< UPrimitiveComponent*> m_arCollsion;
 	TSet<AA_Interaction*> m_setInteractionReceive;
-	std::queue< AA_Interaction*> m_queReceive;
+	std::list< AA_Interaction*> m_listReceive;
 	AA_Interaction* m_pFirst;
 public:
 	UC_InteractionInitiator();
@@ -37,8 +37,10 @@ private:
 protected:
 	AA_Interaction* E_GetInteractionActor(AActor* pInteraction);
 
-	AA_Interaction* E_GetFirst();
 public:
+	AA_Interaction* E_GetFirst();
+	UFUNCTION(BlueprintCallable)
+	bool E_ChangeFirst();
 	UFUNCTION(BlueprintCallable)
 	bool E_Interaction(AA_Interaction*& pInteractedActor);
 	UFUNCTION(BlueprintCallable)

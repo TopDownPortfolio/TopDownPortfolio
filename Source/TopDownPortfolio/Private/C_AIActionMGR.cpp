@@ -7,7 +7,7 @@
 UC_AIActionMGR::UC_AIActionMGR()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_AIAction);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_AIAction);
 }
 
 void UC_AIActionMGR::BeginPlay()

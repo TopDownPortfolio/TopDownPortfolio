@@ -1,6 +1,8 @@
 #include "C_Inventory.h"
+#include "W_ItemSlot.h"
 
-UC_Inventory::UC_Inventory()
+UC_Inventory::UC_Inventory() :
+	UActorComponent{}, m_arItemSlot{}, m_mapItem{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	for (int i = 0; i < E_InventorySize::E_SIZEY; i++)
@@ -16,7 +18,7 @@ UC_Inventory::UC_Inventory()
 
 void UC_Inventory::BeginPlay()
 {
-	Super::BeginPlay();
+	UActorComponent::BeginPlay();
 }
 
 UC_Inventory::S_ItemSlot* UC_Inventory::E_GetEmpthySlot()
@@ -58,6 +60,8 @@ bool UC_Inventory::E_PushItem(int nItemID, int nCount)
 		return false;
 	pSlot->nItemID = nItemID;
 	pSlot->nItemCount += nCount;
+	if (pSlot->pWidget)
+		pSlot->pWidget->E_SetItemID(pSlot->nItemID);
 	return true;
 }
 
@@ -76,4 +80,9 @@ bool UC_Inventory::E_PopItem(int nItemID, int nCount, int& nRemainCount)
 			pSlot->nItemID = 0;
 	}
 	return bResult;
+}
+
+void UC_Inventory::E_SetItemSlotWidget(int nIndexY, int nIndexX, UW_ItemSlot* pWidget)
+{
+	E_GetSlot(nIndexY, nIndexX)->pWidget = pWidget;
 }

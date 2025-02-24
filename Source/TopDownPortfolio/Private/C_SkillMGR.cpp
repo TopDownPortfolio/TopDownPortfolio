@@ -9,7 +9,7 @@ UC_SkillMGR::UC_SkillMGR() :
 	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{},	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
 {
 	PrimaryComponentTick.bCanEverTick  = true;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Skill);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_Skill);
 	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
 	{
 		m_arIndex[i].Init(0, 4);

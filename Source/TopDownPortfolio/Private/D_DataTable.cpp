@@ -2,42 +2,70 @@
 #include "InputMappingContext.h"
 #include "Engine/DataTable.h"
 #include "Blueprint/UserWidget.h"
+#include "W_WindowBase.h"
 
-const TCHAR* UD_DataTable::E_GetDefault(E_DefaultPath eID)
+const TCHAR* UD_DataTable::E_GetDataTable(N_DefaultPath::E_DataTable eID)
 {
-	const TCHAR* pResult[E_DefaultPath::E_EnumMax]{};
-	pResult[E_DefaultPath::E_Montage]			= TEXT("/Game/02_Data/DefaultData/DT-MontageData.DT-MontageData");
-	pResult[E_DefaultPath::E_Status]			= TEXT("/Game/02_Data/DefaultData/DT-StatusData.DT-StatusData");
-	pResult[E_DefaultPath::E_Skill]				= TEXT("/Game/02_Data/DefaultData/DT-SkillData.DT-SkillData");
-	pResult[E_DefaultPath::E_InputMapping]		= TEXT("/Game/01_Blueprint/Input/IMC_Default");
-	pResult[E_DefaultPath::E_AIAction]			= TEXT("/Game/02_Data/DefaultData/DT-AIAction.DT-AIAction");
-	pResult[E_DefaultPath::E_MainWidget]		= TEXT("/Game/01_Blueprint/Widget/W-Main");
-	pResult[E_DefaultPath::E_Attack]			= TEXT("/Game/02_Data/DefaultData/DT-AttackData.DT-AttackData");
+	using namespace N_DefaultPath;
+	const TCHAR* pResult[E_DataTable::E_DataTableMax]{};
+	pResult[E_DataTable::E_Montage] = TEXT("/Game/02_Data/DefaultData/DT-MontageData.DT-MontageData");
+	pResult[E_DataTable::E_Status] = TEXT("/Game/02_Data/DefaultData/DT-StatusData.DT-StatusData");
+	pResult[E_DataTable::E_Skill] = TEXT("/Game/02_Data/DefaultData/DT-SkillData.DT-SkillData");
+	pResult[E_DataTable::E_AIAction] = TEXT("/Game/02_Data/DefaultData/DT-AIAction.DT-AIAction");
+	pResult[E_DataTable::E_Attack] = TEXT("/Game/02_Data/DefaultData/DT-AttackData.DT-AttackData");
+	pResult[E_DataTable::E_InputAction] = TEXT("/Game/02_Data/DefaultData/DT-InputActionData.DT-InputActionData");
+	pResult[E_DataTable::E_CollectionItemData] = TEXT("/Game/02_Data/Item/DataTable/DT-ItemCollectionData.DT-ItemCollectionData");
+	pResult[E_DataTable::E_WindowClassData] = TEXT("/Game/02_Data/DefaultData/DT-WindowClassData.DT-WindowClassData");
 	return pResult[eID];
 }
 
-UDataTable* UD_DataTable::E_GetDefault_DataTable(E_DefaultPath eID)
+const TCHAR* UD_DataTable::E_GetWidgetClass(N_DefaultPath::E_Widget eID)
+{
+	using namespace N_DefaultPath;
+	const TCHAR* pResult[E_Widget::E_WidgetMax]{};
+	pResult[E_Widget::E_MainWidget] = TEXT("/Game/01_Blueprint/Widget/W-Main");
+	return  pResult[eID];
+}
+
+const TCHAR* UD_DataTable::E_GetInpuMapping(N_DefaultPath::E_InputMapping eID)
+{
+	using namespace N_DefaultPath;
+	const TCHAR* pResult[E_InputMapping::E_InputMappingMax]{};
+	pResult[E_InputMapping::E_InputMappingContext] = TEXT("/Game/02_Data/Input/IMC-TopDownPlayer");
+	return  pResult[eID];
+}
+
+const TCHAR* UD_DataTable::E_GetItemIDDataPath(N_DefaultPath::E_ItemIDData eID)
+{
+	using namespace N_DefaultPath;
+	const TCHAR* pResult[E_ItemIDData::E_StaticMeshMax]{};
+	pResult[E_ItemIDData::E_ItemTexture] = TEXT("/Game/02_Data/Item/StaticMesh/helmet");
+	pResult[E_ItemIDData::E_ItemMesh] = TEXT("/Game/02_Data/Item/StaticMesh/helmet");
+	return  pResult[eID];
+}
+
+UDataTable* UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_DataTable eID)
 {
 	UDataTable* pResult{};
-	ConstructorHelpers::FObjectFinder<UDataTable> ObejctFind(E_GetDefault(eID));
+	ConstructorHelpers::FObjectFinder<UDataTable> ObejctFind(E_GetDataTable(eID));
 	if (ObejctFind.Succeeded())
 		pResult = ObejctFind.Object;
 	return pResult;
 }
 
-UInputMappingContext* UD_DataTable::E_GetDefault_InputMappingContext(E_DefaultPath eID)
+UInputMappingContext* UD_DataTable::E_GetDefault_InputMappingContext(N_DefaultPath::E_InputMapping eID)
 {
 	UInputMappingContext* pResult{};
-	ConstructorHelpers::FObjectFinder<UInputMappingContext> ObejctFind(E_GetDefault(eID));
+	ConstructorHelpers::FObjectFinder<UInputMappingContext> ObejctFind(E_GetInpuMapping(eID));
 	if (ObejctFind.Succeeded())
 		pResult = ObejctFind.Object;
 	return pResult;
 }
 
-TSubclassOf< UUserWidget> UD_DataTable::E_GetDefault_UserWidgetClass(E_DefaultPath eID)
+TSubclassOf<UW_WindowBase> UD_DataTable::E_GetDefault_UserWidgetClass(N_DefaultPath::E_Widget eID)
 {
-	TSubclassOf< UUserWidget> cResult{};
-	ConstructorHelpers::FClassFinder<UUserWidget> ClassFind(E_GetDefault(eID));
+	TSubclassOf< UW_WindowBase> cResult{};
+	ConstructorHelpers::FClassFinder<UW_WindowBase> ClassFind(E_GetWidgetClass(eID));
 	if (ClassFind.Succeeded())
 		cResult = ClassFind.Class;
 	return cResult;

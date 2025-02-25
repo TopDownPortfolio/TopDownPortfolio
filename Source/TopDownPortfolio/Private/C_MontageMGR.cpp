@@ -8,7 +8,7 @@ UC_MontageMGR::UC_MontageMGR() :
 	UActorComponent{}, m_arMontageData{}, m_pInstance{}, m_pCurrentData{}, m_sPlayData{}, m_eCurrentID{}, m_pDataTable{}, m_bIsPlaying{}, m_bCanPlay {}, m_bIsInterruptable{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Montage);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_Montage);
 	m_bCanPlay = true;
 	for (uint8 i = (uint8)FE_MontageID::E_NONE ; i < (uint8)FE_MontageID::E_EnumMAX; i++)
 	{

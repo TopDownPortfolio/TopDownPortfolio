@@ -3,8 +3,6 @@
 #include "CoreMinimal.h"
 #include "Engine/UserDefinedStruct.h"
 
-class UAnimMontage;
-
 UENUM(BlueprintType)
 enum class FE_MontageID : uint8
 {

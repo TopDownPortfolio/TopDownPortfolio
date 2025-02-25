@@ -2,19 +2,21 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "E_Skill.h"
+#include "C_Inventory.h"
 #include "C_SkillMGR.h"
 
 
 AA_PlayerController::AA_PlayerController() :
-	APlayerController{}, m_pWidgetMGR{}, m_pInputActionMGR{}, m_pInterfaceMGR{}, FXCursor{}, m_pSkillMGR{}
+	APlayerController{}, m_pWidgetMGR{}, m_pInputActionMGR{}, m_pInterfaceMGR{}, FXCursor{}, m_pSkillMGR{}, m_pInventory{}
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
-	
+
 	m_pWidgetMGR = CreateDefaultSubobject<UC_WidgetMGR>("WidgetMGR");
 	m_pInputActionMGR = CreateDefaultSubobject<UC_InputActionMGR>("InputActionMGR");
 	m_pInterfaceMGR = CreateDefaultSubobject<UC_InterfaceMGR>("InterfaceMGR");
 	m_pSkillMGR = CreateDefaultSubobject<UC_SkillMGR>("SkillMGR");
+	m_pInventory = CreateDefaultSubobject<UC_Inventory>("Inventory");
 }
 
 void AA_PlayerController::E_RegisterComponent(UActorComponent* pComponent)
@@ -42,6 +44,7 @@ FE_WindowID AA_PlayerController::E_GetWidgetID(FE_InputActionID eID)
 {
 	FE_WindowID arSkillID[(uint8)FE_InputActionID::E_EnumMAX] = { FE_WindowID::E_NONE };
 	arSkillID[(uint8)FE_InputActionID::E_SkillWindow] = FE_WindowID::E_Skill;
+	arSkillID[(uint8)FE_InputActionID::E_Inventory] = FE_WindowID::E_Inventory;
 	return arSkillID[(uint8)eID];
 }
 
@@ -64,7 +67,8 @@ void AA_PlayerController::OnConstruction(const FTransform& Transform)
 	E_RegisterComponent(m_pWidgetMGR);
 	E_RegisterComponent(m_pInputActionMGR);
 	E_RegisterComponent(m_pSkillMGR);
-	E_RegisterComponent(m_pInterfaceMGR);
+	E_RegisterComponent(m_pInterfaceMGR); 
+	E_RegisterComponent(m_pInventory); 
 }
 
 

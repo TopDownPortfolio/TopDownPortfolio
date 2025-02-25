@@ -1,0 +1,6 @@
+﻿---,nItemID,eItemType,strItemName,eItemManageabilityFlag,pWidgetTextrue,pItemActorMesh,strItemDesc
+NewRow_0,1,E_Collectibles,골드,7,/Game/02_Data/Item/Texture/Collectibles/T-gold.T-gold,None,아이템 구매 재료
+NewRow_1,2,E_Collectibles,파괴석,7,/Game/02_Data/Item/Texture/Collectibles/T-WeaponStone.T-WeaponStone,None,무기 강화 재료
+NewRow_2,3,E_Collectibles,수호석,7,/Game/02_Data/Item/Texture/Collectibles/T-ArmorStone.T-ArmorStone,None,방어구 강화 재료
+NewRow_3,4,E_Collectibles,None,7,None,None,None
+NewRow_4,5,E_Collectibles,None,7,None,None,None

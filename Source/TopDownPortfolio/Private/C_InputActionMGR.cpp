@@ -6,14 +6,17 @@
 #include "D_DataTable.h"
 
 UC_InputActionMGR::UC_InputActionMGR() :
-	UActorComponent{}, m_mapInputAction{}, m_pDefaultMappingContext{}, m_arInputAction {}
+	UActorComponent{}, m_pDataTable{}, m_arrInputAction{}, m_pDefaultMappingContext{}, m_arInputAction{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	m_pDefaultMappingContext = UD_DataTable::E_GetDefault_InputMappingContext(UD_DataTable::E_DefaultPath::E_InputMapping);
+	m_pDefaultMappingContext = UD_DataTable::E_GetDefault_InputMappingContext(N_DefaultPath::E_InputMappingContext);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_InputAction);
+	m_arrInputAction.Init(nullptr, (uint8)FE_InputActionID::E_EnumMAX);
 }
 
 void UC_InputActionMGR::BeginPlay()
 {
+	m_pDefaultMappingContext->UnmapAll();
 	UActorComponent::BeginPlay();
 	APlayerController* pPlayer = Cast< APlayerController>(GetOwner());
 	if (!pPlayer)
@@ -21,19 +24,22 @@ void UC_InputActionMGR::BeginPlay()
 		DestroyComponent();
 		return;
 	}
-
-	TArray<FE_InputActionID> arData{};
-	m_mapInputAction.GetKeys(arData);
-	for (FE_InputActionID eID : arData)
+	if (m_pDataTable)
 	{
-		E_Change_InputAction(eID);
+		TArray< FS_InputActionData*> arData{};
+		m_pDataTable->GetAllRows< FS_InputActionData>("", arData);
+		for (FS_InputActionData*& pData : arData)
+		{
+			m_arrInputAction[(uint8)pData->eInputActionID] = pData;
+			E_Change_InputAction(pData->eInputActionID);
+		}
 	}
 }
 
 void UC_InputActionMGR::E_Delete_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
-	FS_InputActionData* pInputAction = &m_mapInputAction[eID];
+	FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
 	UO_InputAction* pInputActionObj = E_GetInputAction(eID);
 	if (!pInputAction || !pInputActionObj)
 		return;
@@ -44,7 +50,7 @@ void UC_InputActionMGR::E_Delete_InputAction(FE_InputActionID eID)
 void UC_InputActionMGR::E_Init_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
-	FS_InputActionData* pInputAction = &m_mapInputAction[eID];
+	FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
 	UO_InputAction* pInputActionObj = E_GetInputAction(eID);
 	if (!pInputAction || !pInputActionObj)
 		return;
@@ -62,7 +68,9 @@ void UC_InputActionMGR::E_Change_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
 	E_Delete_InputAction(eID);
-	m_arInputAction[nIndex] = E_CreateInputAction(m_mapInputAction[eID].cClass);
+	m_arInputAction[nIndex] = E_CreateInputAction(m_arrInputAction[(uint8)eID]->cClass);
+	FEnhancedActionKeyMapping& KeyMapping = m_pDefaultMappingContext->MapKey(m_arrInputAction[(uint8)eID]->pInputAction, m_arrInputAction[(uint8)eID]->sKey);
+	KeyMapping.Key = m_arrInputAction[(uint8)eID]->sKey;
 	E_Init_InputAction(eID);
 }
 

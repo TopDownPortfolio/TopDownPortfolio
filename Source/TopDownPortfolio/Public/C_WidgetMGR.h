@@ -6,9 +6,19 @@
 #include "C_WidgetMGR.generated.h"
 
 class APlayerController;
-class UUserWidget;
+class UW_WindowBase;
 class UPanelWidget;
 
+USTRUCT(BlueprintType)
+struct FS_WindowClassData: public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FE_WindowID eWindowID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UW_WindowBase> cWindowClass;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOPDOWNPORTFOLIO_API UC_WidgetMGR : public UActorComponent
@@ -17,15 +27,17 @@ class TOPDOWNPORTFOLIO_API UC_WidgetMGR : public UActorComponent
 protected:
 	struct S_WidgetData
 	{
-		UUserWidget* pWidget;
+		UW_WindowBase* pWidget;
+		bool bRegistered;
 	};
 private:
 	APlayerController* m_pController;
-	UUserWidget* m_pMain;
+	UW_WindowBase* m_pMain;
 	UPanelWidget* m_pMainPanel;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetMGR)
-	TMap<FE_WindowID, TSubclassOf<UUserWidget>> m_mapWindow;
+	UDataTable* m_pDataTable;
+	TMap<FE_WindowID, const FS_WindowClassData*> m_mapWindow;
 private:
 	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
 	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
@@ -37,21 +49,19 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPanelWidget* E_GetMainPanel();
-	UUserWidget* E_CreateWidget(TSubclassOf<UUserWidget> cWidget);
+	UW_WindowBase* E_CreateWidget(TSubclassOf<UW_WindowBase> cWidget);
 
 	bool E_CheckWindow(FE_WindowID eWindowID);
-	void E_Register(FE_WindowID eWindowID, UUserWidget* pWidget);
-
+	void E_Register(FE_WindowID eWindowID, UW_WindowBase* pWidget);
+	void E_AddWidget(UW_WindowBase* pWidget);
+	void E_RemoveWidget(UW_WindowBase* pWidget);
 public:	
 	UFUNCTION(BlueprintPure)
 
-	UUserWidget* E_GetWidget(FE_WindowID eWindowID);
+	UW_WindowBase* E_GetWidget(FE_WindowID eWindowID);
+	UFUNCTION(BlueprintCallable)
 	void E_RegisterWidget(FE_WindowID eWindowID);
 	UFUNCTION(BlueprintCallable)
 	void E_UnRegisterWidget();
 
-	UFUNCTION(BlueprintCallable)
-	void E_AddWidget(UUserWidget* pWidget);
-	UFUNCTION(BlueprintCallable)
-	void E_RemoveWidget(UUserWidget* pWidget);
 };

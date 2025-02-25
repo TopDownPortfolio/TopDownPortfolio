@@ -9,7 +9,7 @@ UC_SkillMGR::UC_SkillMGR() :
 	UActorComponent{}, m_pOwner{}, m_pDataTable{}, m_arSkillData{}, m_arIndex{}, m_sSrc{},	m_arMaxTime{}, m_arCoolTime{}, On_ActionActive{}
 {
 	PrimaryComponentTick.bCanEverTick  = true;
-	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(UD_DataTable::E_DefaultPath::E_Skill);
+	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_Skill);
 	for (uint8 i = (uint8)FE_SkillID::E_NONE; i < (uint8)FE_SkillID::E_EnumMAX; i++)
 	{
 		m_arIndex[i].Init(0, 4);
@@ -84,22 +84,22 @@ bool UC_SkillMGR::E_Action(FE_SkillID eID)
 	UC_MontageMGR* pMontageMGR = m_pOwner->E_GetMontageMGR();
 	UC_StatusMGR* pStatusMGR= m_pOwner->E_GetStatusMGR();
 
-	FRotator TargetRot = m_pOwner->GetActorRotation();
-	TargetRot.Pitch = 0.0f;
-	TargetRot.Roll = 0.0f;
+	//FRotator TargetRot = m_pOwner->GetActorRotation();
+	//TargetRot.Pitch = 0.0f;
+	//TargetRot.Roll = 0.0f;
 
-	UKismetSystemLibrary::MoveComponentTo(
-		m_pOwner->GetRootComponent(),
-		m_pOwner->GetActorLocation(),
-		TargetRot,
-		false,
-		false,
-		1.0f,
-		false,
-		EMoveComponentAction::Move,
-		FLatentActionInfo()
-	);
-	 // TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
+	//UKismetSystemLibrary::MoveComponentTo(
+	//	m_pOwner->GetRootComponent(),
+	//	m_pOwner->GetActorLocation(),
+	//	TargetRot,
+	//	false,
+	//	false,
+	//	1.0f,
+	//	false,
+	//	EMoveComponentAction::Move,
+	//	FLatentActionInfo()
+	//);
+	// // TODO : 추후 콤보 입력을 처리하기 위해 삭제 보류
 	// if (m_sSrc.eSkillID == sDst.eSkillID)
 	// {
 	// 	sDst.nPlayIndex = m_sSrc.nPlayIndex;

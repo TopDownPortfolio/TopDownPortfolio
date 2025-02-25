@@ -11,6 +11,7 @@ class UChildActorComponent;
 class AA_Attacker;
 struct FS_BuffData_Status;
 enum class FE_SkillID :uint8;
+class UC_InteractionInitiator;
 
 UCLASS(Blueprintable)
 class AA_Character_Player : public AA_Character_Base
@@ -21,6 +22,10 @@ protected:
 	UCameraComponent* m_pCameraComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* m_pCameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = InteractionInitiator, meta = (AllowPrivateAccess = "true"))
+	UC_InteractionInitiator* m_pInteractionInitiator;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = InteractionInitiator, meta = (AllowPrivateAccess = "true"))
+	UCapsuleComponent* m_pInteractionCollision;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Status, meta = (AllowPrivateAccess = "true"))
 	FS_BuffData_Status m_sMp;
 public:
@@ -28,7 +33,7 @@ public:
 	FORCEINLINE UCameraComponent* GetTopDownCameraComponent() const { return m_pCameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return m_pCameraBoom; }
 	virtual void OnConstruction(const FTransform& Transform) override;
-
+	//void E_Test(AActor* pTarget);
 protected:
 	virtual void BeginPlay() override;
 	FName E_GetWeaponRSocketName() { return "Weapon_r"; }
@@ -39,5 +44,9 @@ private:
 	void E_Init_CameraBoom();
 	void E_Init_CameraComponent();
 	void E_Init_CharacterMovement();
+
+public:
+	UFUNCTION(BlueprintPure)
+	UC_InteractionInitiator* E_GetInteractionInitiator() { return m_pInteractionInitiator; }
 
 };

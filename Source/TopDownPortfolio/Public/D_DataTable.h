@@ -4,7 +4,8 @@
 
 class UDataTable;
 class UInputMappingContext;
-class UUserWidget;
+class UStaticMesh;
+class UW_WindowBase;
 
 namespace N_DefaultPath
 {
@@ -16,6 +17,8 @@ namespace N_DefaultPath
 		E_AIAction,
 		E_Attack,
 		E_InputAction,
+		E_CollectionItemData,
+		E_WindowClassData,
 		E_DataTableMax
 	};
 	enum E_Widget
@@ -27,6 +30,13 @@ namespace N_DefaultPath
 	{
 		E_InputMappingContext,
 		E_InputMappingMax
+	};
+
+	enum E_ItemIDData
+	{
+		E_ItemTexture,
+		E_ItemMesh,
+		E_StaticMeshMax
 	};
 }
 
@@ -42,7 +52,8 @@ private:
 	static const TCHAR* E_GetWidgetClass(N_DefaultPath::E_Widget eID);
 	static const TCHAR* E_GetInpuMapping(N_DefaultPath::E_InputMapping eID);
 public:
+	static const TCHAR* E_GetItemIDDataPath(N_DefaultPath::E_ItemIDData eID);
 	static UDataTable* E_GetDefault_DataTable(N_DefaultPath::E_DataTable eID);
 	static UInputMappingContext* E_GetDefault_InputMappingContext(N_DefaultPath::E_InputMapping eID);
-	static TSubclassOf< UUserWidget> E_GetDefault_UserWidgetClass(N_DefaultPath::E_Widget  eID);
+	static TSubclassOf< UW_WindowBase> E_GetDefault_UserWidgetClass(N_DefaultPath::E_Widget  eID);
 };

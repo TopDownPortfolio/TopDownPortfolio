@@ -2,6 +2,7 @@
 #include "A_PlayerController.h"
 #include "A_Character_Player.h"
 #include "UObject/ConstructorHelpers.h"
+#include "C_ItemDataTable.h"
 
 AG_GameModeBase::AG_GameModeBase() : 
 	AGameModeBase{}
@@ -22,4 +23,19 @@ AG_GameModeBase::AG_GameModeBase() :
 		PlayerControllerClass = AA_PlayerController::StaticClass();
 	if(!DefaultPawnClass)
 		DefaultPawnClass = AA_Character_Player::StaticClass();
+	m_pItemDataTable = CreateDefaultSubobject<UC_ItemDataTable>("ItemDataTableComponent");
+}
+
+void AG_GameModeBase::OnConstruction(const FTransform& Transform)
+{
+	AGameModeBase::OnConstruction(Transform);
+	if (m_pItemDataTable)
+		m_pItemDataTable->RegisterComponent();
+}
+
+void AG_GameModeBase::StartPlay()
+{
+	AGameModeBase::StartPlay();
+	if (m_pItemDataTable)
+		m_pItemDataTable->E_GeItemData();
 }

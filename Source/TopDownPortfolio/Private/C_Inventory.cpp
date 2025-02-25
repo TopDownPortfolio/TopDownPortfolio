@@ -2,16 +2,33 @@
 #include "W_ItemSlot.h"
 
 UC_Inventory::UC_Inventory() :
-	UActorComponent{}, m_arItemSlot{}, m_mapItem{}
+	UActorComponent{}, m_arItemSlot{}, m_arMoneySlot{}, m_arInventorySlot {}, m_mapItem{}
 {
+	using namespace std;
 	PrimaryComponentTick.bCanEverTick = false;
-	for (int i = 0; i < E_InventorySize::E_SIZEY; i++)
+	m_arItemSlot[0].resize(1, vector<S_ItemSlot>(1));
+	m_arInventorySlot[0] = &m_arItemSlot[0];
+	m_arInventorySlot[(uint8)FE_ItemType::E_ItemSlotMAX] = &m_arItemSlot[0];
+
+	for (uint8 k = 1; k < (uint8)FE_ItemType::E_ItemSlotMAX; k++)
 	{
-		for (int j = 0; j < E_InventorySize::E_SIZEX; j++)
+		m_arItemSlot[k].resize(E_ArSize::E_ItemSlotY, vector<S_ItemSlot>(E_ArSize::E_ItemSlotX));
+		m_arInventorySlot[k] = &m_arItemSlot[k];
+	}
+	m_arMoneySlot.resize(1, vector<S_ItemSlot>((uint8)FE_MoneyType::E_EnumMAX));
+	m_arInventorySlot[(uint8)FE_ItemType::E_Money] = &m_arMoneySlot;
+
+	for (uint8 k = 1; k < (uint8)FE_ItemType::E_ItemSlotMAX; k++)
+	{
+		for (int i = 0; i < E_ArSize::E_ItemSlotY; i++)
 		{
-			S_ItemSlot* pSlot = E_GetSlot(i, j);
-			pSlot->nIndexY = i;
-			pSlot->nIndexX = j;
+			for (int j = 0; j < E_ArSize::E_ItemSlotX; j++)
+			{
+				S_ItemSlot* pSlot = E_GetInventroySlot((FE_ItemType)k, i, j);
+				pSlot->sInstanceData.eItemType = (FE_ItemType)k;
+				pSlot->nIndexY = i;
+				pSlot->nIndexX = j;
+			}
 		}
 	}
 }
@@ -21,68 +38,104 @@ void UC_Inventory::BeginPlay()
 	UActorComponent::BeginPlay();
 }
 
-UC_Inventory::S_ItemSlot* UC_Inventory::E_GetEmpthySlot()
+UC_Inventory::S_ItemSlot* UC_Inventory::E_GetEmpthySlot(FE_ItemType eItemType)
 {
 	S_ItemSlot* pResult{};
-	for (int i = 0; i < E_InventorySize::E_SIZEY && pResult == nullptr; i++)
+	for (int i = 0; i < E_ArSize::E_ItemSlotY && pResult == nullptr; i++)
 	{
-		for (int j = 0; j < E_InventorySize::E_SIZEX && pResult == nullptr; j++)
+		for (int j = 0; j < E_ArSize::E_ItemSlotX && pResult == nullptr; j++)
 		{
-			S_ItemSlot* pSlot = E_GetSlot(i, j);
-			if (pSlot->nItemID == 0)
+			S_ItemSlot* pSlot = E_GetInventroySlot(eItemType, i, j);
+			if (pSlot->sInstanceData.nItemID == 0)
 				pResult = pSlot;
 		}
 	}
 	return pResult;
 }
 
-UC_Inventory::S_ItemSlot* UC_Inventory::E_GetSlot(int nIndexY, int nIndexX)
+UC_Inventory::S_ItemSlot* UC_Inventory::E_GetInventroySlot(FE_ItemType eItemType, int nIndexY, int nIndexX)
 {
-	return &m_arItemSlot[nIndexY][nIndexX];
+	using namespace std;
+	S_ItemSlot* pReusult{};
+	vector<vector<S_ItemSlot>>* arSlot = m_arInventorySlot[(uint8)eItemType];
+	if (arSlot->size() > nIndexY && (*arSlot)[0].size() > nIndexX)
+	{
+		pReusult = &(*arSlot)[nIndexY][nIndexX];
+	}
+	if (!pReusult)
+		pReusult = &(*arSlot)[0][0];
+	return  pReusult;
 }
 
-int UC_Inventory::E_GetItemCounts(int nIndexY, int nIndexX)
+int UC_Inventory::E_GetItemCounts(FE_ItemType eItemType, int nIndexY, int nIndexX)
 {
-	return E_GetSlot(nIndexY , nIndexX)->nItemCount;
+	return E_GetInventroySlot(eItemType, nIndexY, nIndexX)->sInstanceData.nItemCount;
 }
 
-int UC_Inventory::E_GetItemID(int nIndexY, int nIndexX)
+int UC_Inventory::E_GetItemID(FE_ItemType eItemType, int nIndexY, int nIndexX)
 {
-	return E_GetSlot(nIndexY, nIndexX)->nItemID;
+	return E_GetInventroySlot(eItemType, nIndexY, nIndexX)->sInstanceData.nItemID;
 }
 
-bool UC_Inventory::E_PushItem(int nItemID, int nCount)
+bool UC_Inventory::E_PushItem(FS_ItemInstanceData* sInstanceData)
 {
-	S_ItemSlot*& pSlot = m_mapItem.FindOrAdd(nItemID);
+	int nItemID = sInstanceData->nItemID;
+	int nCount = sInstanceData->nItemCount;
+	uint8 nType = (uint8)sInstanceData->eItemType;
+	S_ItemSlot*& pSlot = m_mapItem[nType].FindOrAdd(nItemID);
 	if (!pSlot)
-		pSlot = E_GetEmpthySlot();
+		pSlot = E_GetEmpthySlot(sInstanceData->eItemType);
 	if (!pSlot)
 		return false;
-	pSlot->nItemID = nItemID;
-	pSlot->nItemCount += nCount;
+	pSlot->sInstanceData.nItemID = nItemID;
+	pSlot->sInstanceData.nItemCount += nCount;
 	if (pSlot->pWidget)
-		pSlot->pWidget->E_SetItemID(pSlot->nItemID);
+		pSlot->pWidget->E_SetItemID(pSlot->sInstanceData.nItemID, pSlot->sInstanceData.nItemCount);
 	return true;
 }
 
-bool UC_Inventory::E_PopItem(int nItemID, int nCount, int& nRemainCount)
+bool UC_Inventory::E_PopItem(FS_ItemInstanceData* sInstanceData, int& nRemainCount)
 {
-	S_ItemSlot*& pSlot = m_mapItem.FindOrAdd(nItemID);
+	int nItemID = sInstanceData->nItemID;
+	int nCount = sInstanceData->nItemCount;
+	uint8 nType = (uint8)sInstanceData->eItemType;
+	S_ItemSlot*& pSlot = m_mapItem[nType].FindOrAdd(nItemID);
 	if (!pSlot)
 		return false;
 	bool bResult{};
-	if (pSlot->nItemCount >= nCount)
+	if (pSlot->sInstanceData.nItemCount >= nCount)
 	{
 		bResult = true;
-		pSlot->nItemCount -= nCount;
-		nRemainCount = pSlot->nItemCount;
-		if (pSlot->nItemCount <= 0)
-			pSlot->nItemID = 0;
+		pSlot->sInstanceData.nItemCount -= nCount;
+		nRemainCount = pSlot->sInstanceData.nItemCount;
+		if (pSlot->sInstanceData.nItemCount <= 0)
+			pSlot->sInstanceData.nItemID = 0;
 	}
 	return bResult;
 }
 
-void UC_Inventory::E_SetItemSlotWidget(int nIndexY, int nIndexX, UW_ItemSlot* pWidget)
+bool UC_Inventory::E_PushItem(FS_ItemInstanceData sInstanceData)
 {
-	E_GetSlot(nIndexY, nIndexX)->pWidget = pWidget;
+	return E_PushItem(&sInstanceData);
+}
+
+bool UC_Inventory::E_PopItem(FS_ItemInstanceData sInstanceData, int& nRemainCount)
+{
+	return E_PopItem(&sInstanceData, nRemainCount);
+}
+
+void UC_Inventory::E_SetItemSlotWidget(FE_ItemType eItemType,int nIndexY, int nIndexX, UW_ItemSlot* pWidget)
+{
+	E_GetInventroySlot(eItemType, nIndexY, nIndexX)->pWidget = pWidget;
+}
+
+bool UC_Inventory::E_Switch(UW_ItemSlot* pSrc, UW_ItemSlot* pDst)
+{
+	if (!pSrc || pSrc == pDst)
+		return false;
+	if (pSrc->E_Switch(pDst) == false)
+		return false;
+	pSrc->E_RsetWidget_Implementation();
+	pDst->E_RsetWidget_Implementation();
+	return true;
 }

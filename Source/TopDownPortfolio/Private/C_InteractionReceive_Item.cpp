@@ -49,7 +49,9 @@ bool UC_InteractionReceive_Item::E_InteractionEvent_Implementation(AActor* pInit
 		return false;
 	AA_PlayerController* pController = Cast< AA_PlayerController>(pPlayer->GetController());
 	UC_Inventory* pInventroy = pController->E_GetInventory();
-	return pInventroy->E_PushItem(m_pItem->E_GetItemID(), m_pItem->E_GetItemCount());
+	FS_ItemInstanceData sInstanceData{};
+	m_pItem->E_SetItemInstance(sInstanceData);
+	return pInventroy->E_PushItem(&sInstanceData);
 }
 
 bool UC_InteractionReceive_Item::E_SelectedOnEvent_Implementation(AActor* pInitiator, UActorComponent* pInteractionCompo)

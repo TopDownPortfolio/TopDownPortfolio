@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "S_Item.h"
+#include <vector>
 #include "C_Inventory.generated.h"
 
 class UUserWidget;
@@ -12,42 +14,50 @@ class TOPDOWNPORTFOLIO_API UC_Inventory : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-	enum E_InventorySize
+	enum E_ArSize
 	{
-		E_SIZEY = 10,
-		E_SIZEX = 10,
-	};
-	struct S_ItemSlot
-	{
-		int nItemID;
-		int nIndexY;
-		int nIndexX;
-		int nItemCount;
-		UW_ItemSlot* pWidget;
+		E_ItemSlotX = 10,
+		E_ItemSlotY = 10,
 	};
 
-	S_ItemSlot m_arItemSlot[E_InventorySize::E_SIZEY][E_InventorySize::E_SIZEX];
-	TMap<int, S_ItemSlot*> m_mapItem;
+	struct S_ItemSlot
+	{
+		FS_ItemInstanceData sInstanceData;
+		int nIndexY;
+		int nIndexX;
+		UW_ItemSlot* pWidget;
+	};
+	std::vector<std::vector<S_ItemSlot>> m_arItemSlot[(uint8)FE_ItemType::E_ItemSlotMAX];
+	std::vector<std::vector<S_ItemSlot>> m_arMoneySlot;
+	std::vector<std::vector<S_ItemSlot>>* m_arInventorySlot[(uint8)FE_ItemType::E_EnumMAX];
+	TMap<int, S_ItemSlot*> m_mapItem[(uint8)FE_ItemType::E_EnumMAX];
 public:	
 	UC_Inventory();
 protected:
 	virtual void BeginPlay() override;
 
-	S_ItemSlot* E_GetEmpthySlot();
-	S_ItemSlot* E_GetSlot(int nIndexY, int nIndexX);
+	S_ItemSlot* E_GetEmpthySlot(FE_ItemType eItemType);
+	S_ItemSlot* E_GetInventroySlot(FE_ItemType eItemType, int nIndexY, int nIndexX = 0);
 public:	
 	UFUNCTION(BlueprintPure)
-	int E_GetSlotSizeX() { return E_InventorySize::E_SIZEX; }
+	int E_GetSlotSizeX() { return E_ArSize::E_ItemSlotX; }
 	UFUNCTION(BlueprintPure)
-	int E_GetSlotSizeY() { return E_InventorySize::E_SIZEY; }
+	int E_GetSlotSizeY() { return E_ArSize::E_ItemSlotY; }
 	UFUNCTION(BlueprintPure)
-	int E_GetItemCounts(int nIndexY, int nIndexX);
+	int E_GetItemCounts(FE_ItemType eItemType, int nIndexY, int nIndexX);
 	UFUNCTION(BlueprintPure)
-	int E_GetItemID(int nIndexY, int nIndexX);
+	int E_GetItemID(FE_ItemType eItemType, int nIndexY, int nIndexX);
+
+	bool E_PushItem(FS_ItemInstanceData* sInstanceData);
+	bool E_PopItem(FS_ItemInstanceData* sInstanceData, int& nRemainCount);
+
 	UFUNCTION(BlueprintCallable)
-	bool E_PushItem(int nItemID, int nCount);
+	bool E_PushItem(FS_ItemInstanceData sInstanceData);
 	UFUNCTION(BlueprintCallable)
-	bool E_PopItem(int nItemID, int nCount, int& nRemainCount);
+	bool E_PopItem(FS_ItemInstanceData sInstanceData, int& nRemainCount);
 	UFUNCTION(BlueprintCallable)
-	void E_SetItemSlotWidget(int nIndexY, int nIndexX, UW_ItemSlot* pWidget);
+	void E_SetItemSlotWidget(FE_ItemType eItemType, int nIndexY, int nIndexX, UW_ItemSlot* pWidget);
+
+	UFUNCTION(BlueprintCallable)
+	bool E_Switch(UW_ItemSlot* pSrc, UW_ItemSlot* pDst);
 };

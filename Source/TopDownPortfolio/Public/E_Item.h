@@ -9,6 +9,17 @@ enum class FE_ItemType : uint8
 	E_Equipment,
 	E_Consumable,
 	E_Collectibles,
+	E_ItemSlotMAX  UMETA(Hidden),
+	E_Money,
+	E_EnumMAX  UMETA(Hidden),
+};
+
+UENUM(BlueprintType)
+enum class FE_MoneyType : uint8
+{
+	E_NONE UMETA(Hidden),
+	E_Gold,
+	E_Sling,
 	E_EnumMAX  UMETA(Hidden),
 };
 

@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "A_Interaction.h"
-#include "E_Item.h"
+#include "S_Item.h"
 #include "A_Interaction_Item.generated.h"
 
 class UCapsuleComponent;
@@ -20,10 +20,8 @@ private:
 	UStaticMeshComponent* m_pMeshComponent;
 	UPROPERTY(VisibleAnywhere, Category = Item, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* m_pCollisionComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true", ClampMin = "0"))
-	int m_nItemID;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, meta = (AllowPrivateAccess = "true"))
-	int m_nCount;
+	FS_ItemInstanceData m_sItemInstanceData;
 public:
 	AA_Interaction_Item();
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -32,10 +30,12 @@ protected:
 public:
 	UStaticMeshComponent* E_GetStaticMeshComponent() { return m_pMeshComponent; }
 
-	int E_GetItemID() { return  m_nItemID;	}
-	int E_GetItemCount() { return  m_nCount;	}
+	int E_GetItemID() { return  m_sItemInstanceData.nItemID;	}
+	int E_GetItemCount() { return  m_sItemInstanceData.nItemCount;	}
 	UFUNCTION(BlueprintPure)
-	void E_GetItemID(int& nItemID) { nItemID = m_nItemID;	}
+	void E_GetItemID(int& nItemID) { nItemID = m_sItemInstanceData.nItemID;	}
 	UFUNCTION(BlueprintPure)
-	void E_GetItemCount(int& nItemCount) { nItemCount = m_nCount;	}
+	void E_GetItemCount(int& nItemCount) { nItemCount = m_sItemInstanceData.nItemCount;	}
+	UFUNCTION(BlueprintPure)
+	void E_SetItemInstance(FS_ItemInstanceData& sItemInstance);
 };

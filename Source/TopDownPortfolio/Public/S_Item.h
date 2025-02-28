@@ -7,6 +7,7 @@
 
 class UTexture2D;
 class UStaticMesh;
+
 USTRUCT(BlueprintType)
 struct FS_ItemInstanceData
 {
@@ -25,6 +26,7 @@ struct FS_ItemData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	FS_ItemData();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"))
 	int nItemID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -32,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName strItemName;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (Bitmask, BitmaskEnum = FE_ItemManageabilityFlag))
-	uint8 eItemManageabilityFlag = 0b00000111;
+	uint8 eItemManageabilityFlag;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* pWidgetTextrue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -46,8 +48,8 @@ struct FS_ItemData_Equipment : public FS_ItemData
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	//FS_ItemData_Equipment();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FS_ItemData_Equipment();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Equipment")
 	FE_EquipmentType eEquipmentType;
 };
 
@@ -56,7 +58,8 @@ struct FS_ItemData_Consumable : public FS_ItemData
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FS_ItemData_Consumable();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
 	FE_ConsumableType eConsumableType;
 }; 
 
@@ -65,5 +68,16 @@ struct FS_ItemData_Collectibles : public FS_ItemData
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	FS_ItemData_Collectibles();
+};
+
+USTRUCT()
+struct FS_ItemData_Money: public FS_ItemData
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	FS_ItemData_Money();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Money")
+	FE_MoneyType eMoneyType;
 };
 

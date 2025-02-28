@@ -1,5 +1,6 @@
 #include "C_Inventory.h"
 #include "W_ItemSlot.h"
+#include "BFL_ItemLibrary.h"
 
 UC_Inventory::UC_Inventory() :
 	UActorComponent{}, m_arItemSlot{}, m_arMoneySlot{}, m_arInventorySlot {}, m_mapItem{}
@@ -83,7 +84,9 @@ bool UC_Inventory::E_PushItem(FS_ItemInstanceData* sInstanceData)
 	int nCount = sInstanceData->nItemCount;
 	uint8 nType = (uint8)sInstanceData->eItemType;
 	S_ItemSlot*& pSlot = m_mapItem[nType].FindOrAdd(nItemID);
-	if (!pSlot)
+	uint8 eItemFlag{};
+	UBFL_ItemLibrary::E_GetItemFlag(this, sInstanceData->eItemType, nItemID, eItemFlag);
+	if (!pSlot || !(eItemFlag & (uint8)FE_ItemManageabilityFlag::E_Bundlable))
 		pSlot = E_GetEmpthySlot(sInstanceData->eItemType);
 	if (!pSlot)
 		return false;
@@ -137,5 +140,7 @@ bool UC_Inventory::E_Switch(UW_ItemSlot* pSrc, UW_ItemSlot* pDst)
 		return false;
 	pSrc->E_RsetWidget_Implementation();
 	pDst->E_RsetWidget_Implementation();
+
+	m_mapItem[(uint8)pSrc->m_eItemType];
 	return true;
 }

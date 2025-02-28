@@ -14,6 +14,11 @@ class TOPDOWNPORTFOLIO_API UC_ItemDataTable : public UActorComponent
 private:
 	UDataTable* m_arDataTable[(uint8)FE_ItemType::E_EnumMAX];
 	TMap<int, const FS_ItemData*> m_mapItemData[(uint8)FE_ItemType::E_EnumMAX];
+	FS_ItemData_Equipment m_arDefaultStruct_Equip;
+	FS_ItemData_Consumable m_arDefaultStruct_Consumable;
+	FS_ItemData_Collectibles m_arDefaultStruct_Collectibles;
+	FS_ItemData_Money m_arDefaultStruct_Money;
+	FS_ItemData m_arDefaultStruct;
 public:	
 	UC_ItemDataTable();
 
@@ -22,6 +27,7 @@ protected:
 
 private:
 	void E_GeItemData(FE_ItemType eType);
+	void E_SetDataTable(FE_ItemType eItemType, uint8 ePathType);
 	const FS_ItemData* E_GetItemData(FE_ItemType eType, int nItemID);
 public:	
 	void E_GeItemData();

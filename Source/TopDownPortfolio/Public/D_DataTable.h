@@ -18,13 +18,10 @@ namespace N_DefaultPath
 		E_Attack,
 		E_InputAction,
 		E_CollectionItemData,
+		E_MoneyData,
+		E_EquipItemData,
 		E_WindowClassData,
 		E_DataTableMax
-	};
-	enum E_Widget
-	{
-		E_MainWidget,
-		E_WidgetMax
 	};
 	enum E_InputMapping
 	{
@@ -49,11 +46,9 @@ private:
 	~UD_DataTable() = default;
 	
 	static const TCHAR* E_GetDataTable(N_DefaultPath::E_DataTable eID);
-	static const TCHAR* E_GetWidgetClass(N_DefaultPath::E_Widget eID);
 	static const TCHAR* E_GetInpuMapping(N_DefaultPath::E_InputMapping eID);
 public:
 	static const TCHAR* E_GetItemIDDataPath(N_DefaultPath::E_ItemIDData eID);
 	static UDataTable* E_GetDefault_DataTable(N_DefaultPath::E_DataTable eID);
 	static UInputMappingContext* E_GetDefault_InputMappingContext(N_DefaultPath::E_InputMapping eID);
-	static TSubclassOf< UW_WindowBase> E_GetDefault_UserWidgetClass(N_DefaultPath::E_Widget  eID);
 };

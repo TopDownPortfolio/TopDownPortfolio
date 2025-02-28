@@ -39,7 +39,7 @@ void UC_InputActionMGR::BeginPlay()
 void UC_InputActionMGR::E_Delete_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
-	FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
+	const FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
 	UO_InputAction* pInputActionObj = E_GetInputAction(eID);
 	if (!pInputAction || !pInputActionObj)
 		return;
@@ -50,7 +50,7 @@ void UC_InputActionMGR::E_Delete_InputAction(FE_InputActionID eID)
 void UC_InputActionMGR::E_Init_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
-	FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
+	const FS_InputActionData* pInputAction = m_arrInputAction[(uint8)eID];
 	UO_InputAction* pInputActionObj = E_GetInputAction(eID);
 	if (!pInputAction || !pInputActionObj)
 		return;
@@ -68,9 +68,9 @@ void UC_InputActionMGR::E_Change_InputAction(FE_InputActionID eID)
 {
 	uint8 nIndex = (uint8)eID;
 	E_Delete_InputAction(eID);
-	m_arInputAction[nIndex] = E_CreateInputAction(m_arrInputAction[(uint8)eID]->cClass);
-	FEnhancedActionKeyMapping& KeyMapping = m_pDefaultMappingContext->MapKey(m_arrInputAction[(uint8)eID]->pInputAction, m_arrInputAction[(uint8)eID]->sKey);
-	KeyMapping.Key = m_arrInputAction[(uint8)eID]->sKey;
+	m_arInputAction[nIndex] = E_CreateInputAction(m_arrInputAction[nIndex]->cClass);
+	FEnhancedActionKeyMapping& KeyMapping = m_pDefaultMappingContext->MapKey(m_arrInputAction[nIndex]->pInputAction, m_arrInputAction[nIndex]->sKey);
+	KeyMapping.Key = m_arrInputAction[nIndex]->sKey;
 	E_Init_InputAction(eID);
 }
 

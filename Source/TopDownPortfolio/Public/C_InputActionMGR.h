@@ -34,7 +34,7 @@ private:
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
 	UDataTable* m_pDataTable;
-	TArray<FS_InputActionData*> m_arrInputAction;
+	TArray<const FS_InputActionData*> m_arrInputAction;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = InputActionMGR)
 	UInputMappingContext* m_pDefaultMappingContext;
 	UPROPERTY(VisibleAnywhere, Category = InputActionMGR)

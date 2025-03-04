@@ -41,6 +41,7 @@ protected:
 	void E_BlendedInEnded(UAnimMontage* pMontage);
 	UFUNCTION()
 	void E_Bind();
+	UAnimMontage* E_LoadSynchronousMontage(TSoftObjectPtr<UAnimMontage> pSoftObject);
 
 public:	
 	//void E_SetMontageData(TArray< FS_MontageData*>* arMontageData) { m_arMontageData = arMontageData; }

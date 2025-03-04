@@ -80,6 +80,14 @@ void UC_MontageMGR::E_Bind()
 	m_pInstance->OnMontageEnded.AddDynamic(this, &UC_MontageMGR::E_Ended);
 }
 
+UAnimMontage* UC_MontageMGR::E_LoadSynchronousMontage(TSoftObjectPtr<UAnimMontage> pSoftObject)
+{
+	UAnimMontage* Montage = pSoftObject.Get();
+	if (!Montage)
+		pSoftObject.LoadSynchronous();
+	return Montage;
+}
+
 bool UC_MontageMGR::E_Play(FE_MontageID eID, int nIndex)
 {
 	bool bResult{};
@@ -114,12 +122,14 @@ bool UC_MontageMGR::E_CheckPlayable(FE_MontageID eID, int nIndex)
 
 void UC_MontageMGR::E_PlayMontage_Implementation()
 {
-	m_pInstance->Montage_Play(m_pCurrentData->pMontage, m_sPlayData.fPlaySpeed);
+	UAnimMontage* Montage = E_LoadSynchronousMontage(m_pCurrentData->pMontage);
+	m_pInstance->Montage_Play(Montage, m_sPlayData.fPlaySpeed);
 }
 
 void UC_MontageMGR::E_Jump2Section_Implementation()
 {
-	m_pInstance->Montage_JumpToSection(m_sPlayData.strSection, m_pCurrentData->pMontage);
+	UAnimMontage* Montage = E_LoadSynchronousMontage(m_pCurrentData->pMontage);
+	m_pInstance->Montage_JumpToSection(m_sPlayData.strSection, Montage);
 }
 
 

@@ -36,6 +36,4 @@ void AG_GameModeBase::OnConstruction(const FTransform& Transform)
 void AG_GameModeBase::StartPlay()
 {
 	AGameModeBase::StartPlay();
-	if (m_pItemDataTable)
-		m_pItemDataTable->E_GeItemData();
 }

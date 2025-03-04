@@ -26,11 +26,12 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void E_GeItemData(FE_ItemType eType);
+	void E_GetDataTable(FE_ItemType eType);
 	void E_SetDataTable(FE_ItemType eItemType, uint8 ePathType);
 	const FS_ItemData* E_GetItemData(FE_ItemType eType, int nItemID);
+	UTexture2D* E_LoadSynchronousTexture(TSoftObjectPtr<UTexture2D> pSoftObject);
+	UStaticMesh* E_LoadSynchronousMesh(TSoftObjectPtr<UStaticMesh> pSoftObject);
 public:	
-	void E_GeItemData();
 	FName E_GetItemName(FE_ItemType eItemType, int nItemID);
 	uint8 E_GetItemFlag(FE_ItemType eItemType, int nItemID);
 	UTexture2D* E_GetItemTexture(FE_ItemType eItemType, int nItemID);

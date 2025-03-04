@@ -2,9 +2,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Widgets/Layout/Anchors.h"
+#include "A_PlayerController.h"
 
 UW_WindowBase::UW_WindowBase(const FObjectInitializer& ObjectInitializer) :
-	UUserWidget{ ObjectInitializer }, m_vAnchors{}, m_vWidgetPosition{}, m_vWidgetSize{}, m_eWindowID{}
+	UUserWidget{ ObjectInitializer }, m_vAnchors{}, m_vWidgetPosition{}, m_vWidgetSize{}, m_eWindowID{}, m_pWidgetMGR{}
 {
 	
 }
@@ -29,4 +30,20 @@ void UW_WindowBase::NativePreConstruct()
 		pOwner->SetPosition(E_GetSettingVector2D(FE_WindowSetting::E_WidgetPosition));
 		pOwner->SetSize(E_GetSettingVector2D(FE_WindowSetting::E_WidgetSize));
 	}
+}
+
+void UW_WindowBase::NativeOnInitialized()
+{
+	UUserWidget::NativeOnInitialized();
+	AA_PlayerController* pPlayer = Cast<AA_PlayerController>(GetOwningPlayer());
+	if (!pPlayer)
+		return;
+	m_pWidgetMGR = pPlayer->E_GetWidgetMGR();
+}
+
+FReply UW_WindowBase::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
+{
+	if (m_pWidgetMGR)
+		m_pWidgetMGR->E_SetFocus(m_eWindowID);
+	return UUserWidget::NativeOnFocusReceived(InGeometry, InFocusEvent);
 }

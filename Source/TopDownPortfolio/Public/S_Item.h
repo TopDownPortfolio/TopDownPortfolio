@@ -7,6 +7,7 @@
 
 class UTexture2D;
 class UStaticMesh;
+class UUserWidget;
 
 USTRUCT(BlueprintType)
 struct FS_ItemInstanceData
@@ -19,6 +20,22 @@ public:
 	int nItemID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int nItemCount;
+};
+
+USTRUCT(BlueprintType)
+struct FS_ItemStoreData : public FTableRowBase
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FS_ItemInstanceData sSellingItem;
+	// -1 == Infinity
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int nSellableCount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"))
+	FS_ItemInstanceData sRetailItem;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> cWidgetClass;
 };
 
 USTRUCT(BlueprintType)
@@ -36,9 +53,9 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (Bitmask, BitmaskEnum = FE_ItemManageabilityFlag))
 	uint8 eItemManageabilityFlag;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* pWidgetTextrue;
+	TSoftObjectPtr<UTexture2D> pWidgetTextrue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMesh* pItemActorMesh;
+	TSoftObjectPtr<UStaticMesh> pItemActorMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName strItemDesc;
 };

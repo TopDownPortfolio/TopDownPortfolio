@@ -10,6 +10,7 @@ enum class FE_WindowID: uint8
 	E_Inventory,
 	E_PlayerActionBar,
 	E_MonsterActionBar,
+	E_ItemStore,
 	E_EnumMAX UMETA(Hidden),
 };
 

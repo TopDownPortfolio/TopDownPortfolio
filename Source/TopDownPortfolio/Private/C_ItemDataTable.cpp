@@ -17,17 +17,15 @@ UC_ItemDataTable::UC_ItemDataTable() :
 	E_SetDataTable(FE_ItemType::E_Collectibles, N_DefaultPath::E_CollectionItemData);
 	E_SetDataTable(FE_ItemType::E_Money, N_DefaultPath::E_MoneyData);
 	E_SetDataTable(FE_ItemType::E_Equipment, N_DefaultPath::E_EquipItemData);
-	E_SetDataTable(FE_ItemType::E_Equipment, N_DefaultPath::E_EquipItemData);
 	//E_SetDataTable(FE_ItemType::E_Consumable, N_DefaultPath::E_EquipItemData);
 }
 
 void UC_ItemDataTable::BeginPlay()
 {
 	UActorComponent::BeginPlay();
-	E_GeItemData();
 }
 
-void UC_ItemDataTable::E_GeItemData(FE_ItemType eType)
+void UC_ItemDataTable::E_GetDataTable(FE_ItemType eType)
 {
 	uint8 nType = (uint8)eType;
 	UDataTable* pDataTable = m_arDataTable[nType];
@@ -45,6 +43,7 @@ void UC_ItemDataTable::E_GeItemData(FE_ItemType eType)
 void UC_ItemDataTable::E_SetDataTable(FE_ItemType eItemType, uint8 ePathType)
 {
 	m_arDataTable[(uint8)eItemType] = UD_DataTable::E_GetDefault_DataTable((N_DefaultPath::E_DataTable)ePathType);
+	E_GetDataTable(eItemType);
 }
 
 const FS_ItemData* UC_ItemDataTable::E_GetItemData(FE_ItemType eType, int nItemID)
@@ -56,12 +55,20 @@ const FS_ItemData* UC_ItemDataTable::E_GetItemData(FE_ItemType eType, int nItemI
 	return *ppData;
 }
 
-void UC_ItemDataTable::E_GeItemData()
+UTexture2D* UC_ItemDataTable::E_LoadSynchronousTexture(TSoftObjectPtr<UTexture2D> pSoftObject)
 {
-	E_GeItemData(FE_ItemType::E_Equipment);
-	E_GeItemData(FE_ItemType::E_Consumable);
-	E_GeItemData(FE_ItemType::E_Collectibles);
-	E_GeItemData(FE_ItemType::E_Money);
+	UTexture2D* pObject = pSoftObject.Get();
+	if(!pObject)
+		pObject = pSoftObject.LoadSynchronous();
+	return pObject;
+}
+
+UStaticMesh* UC_ItemDataTable::E_LoadSynchronousMesh(TSoftObjectPtr<UStaticMesh> pSoftObject)
+{
+	UStaticMesh* pObject = pSoftObject.Get();
+	if (!pObject)
+		pObject = pSoftObject.LoadSynchronous();
+	return pObject;
 }
 
 FName UC_ItemDataTable::E_GetItemName(FE_ItemType eItemType, int nItemID)
@@ -79,13 +86,13 @@ uint8 UC_ItemDataTable::E_GetItemFlag(FE_ItemType eItemType, int nItemID)
 UTexture2D* UC_ItemDataTable::E_GetItemTexture(FE_ItemType eItemType, int nItemID)
 {
 	const FS_ItemData* pData = E_GetItemData(eItemType, nItemID);
-	return pData->pWidgetTextrue;
+	return E_LoadSynchronousTexture(pData->pWidgetTextrue);
 }
 
 UStaticMesh* UC_ItemDataTable::E_GetItemStaticMesh(FE_ItemType eItemType, int nItemID)
 {
 	const FS_ItemData* pData = E_GetItemData(eItemType, nItemID);
-	return pData->pItemActorMesh;
+	return E_LoadSynchronousMesh(pData->pItemActorMesh);
 }
 
 FName UC_ItemDataTable::E_GetItemDesc(FE_ItemType eItemType, int nItemID)

@@ -8,12 +8,11 @@
 #include "D_DataTable.h"
 
 UC_WidgetMGR::UC_WidgetMGR() :
-	UActorComponent{}, m_pController{}, m_pMain{}, m_pMainPanel{}, m_pDataTable{}, m_mapWindow {}, m_arWidgetData{}, m_arWidgetStack{}, m_nStackCount{}
+	UActorComponent{}, m_pController{}, m_pMain{}, m_pMainPanel{}, m_arWidgetData{}, m_pDataTable{}, m_mapWindow{}, m_arWidgetStack{}, m_nStackCount{}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
 	//m_mapWindow.FindOrAdd(FE_WindowID::E_Main, UD_DataTable::E_GetDefault_UserWidgetClass(N_DefaultPath::E_MainWidget));
-	m_nStackCount = -1;
 	m_pDataTable = UD_DataTable::E_GetDefault_DataTable(N_DefaultPath::E_WindowClassData);
 	if (m_pDataTable)
 	{
@@ -46,11 +45,14 @@ void UC_WidgetMGR::BeginPlay()
 		const FS_WindowClassData* const * pData = m_mapWindow.Find(eID);
 		uint8 nIndedx = (uint8)(*pData)->eWindowID;
 		m_arWidgetData[nIndedx].pWidget = E_CreateWidget((*pData)->cWindowClass);
+		//E_Register(eWindowID, pRefWidget);
 	}
 	m_pMain = m_arWidgetData[(uint8)FE_WindowID::E_Main].pWidget;
 	m_pMain->AddToViewport();
+
 	E_AddWidget(m_arWidgetData[(uint8)FE_WindowID::E_PlayerActionBar].pWidget);
 	m_arWidgetData[(uint8)FE_WindowID::E_PlayerActionBar].bRegistered = true;
+
 }
 
 UPanelWidget* UC_WidgetMGR::E_GetMainPanel()
@@ -83,32 +85,44 @@ UW_WindowBase* UC_WidgetMGR::E_GetWidget(FE_WindowID eWindowID)
 
 void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eWindowID)
 {
-	if (m_nStackCount == (uint8)FE_WindowID::E_EnumMAX || !E_CheckWindow(eWindowID))
-		return;
 	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
 	UW_WindowBase* pRefWidget = pWidgetData->pWidget;
-	E_Register(eWindowID, pRefWidget);
-	pRefWidget->SetFocus();
+	E_PushStack(eWindowID);
 	if (!pWidgetData->bRegistered)
 	{
 		E_AddWidget(pRefWidget);
 		pWidgetData->bRegistered = true;
 	}
-	m_nStackCount++;
-	m_arWidgetStack[m_nStackCount] = eWindowID;
-	
+	else
+	{
+		E_UnRegisterWidget(eWindowID);
+	}
+}
+
+void UC_WidgetMGR::E_UnRegisterWidget(FE_WindowID eWindowID)
+{
+	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
+	E_PopStack(eWindowID);
+	if (pWidgetData->bRegistered)
+	{
+		pWidgetData->bRegistered = false;
+		UW_WindowBase* pWidget = pWidgetData->pWidget;
+		E_RemoveWidget(pWidget);
+	}
 }
 
 void UC_WidgetMGR::E_UnRegisterWidget()
 {
-	if (m_nStackCount < 0)
-		return;
-	FE_WindowID eWindowID = m_arWidgetStack[m_nStackCount];
-	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
+	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)m_arWidgetStack[m_nStackCount]];
+	/*
 	pWidgetData->bRegistered = false;
 	UW_WindowBase* pWidget = pWidgetData->pWidget;
 	E_RemoveWidget(pWidget);
-	m_nStackCount--;
+	m_arWidgetStack[m_nStackCount] = FE_WindowID::E_NONE;
+	while (m_nStackCount >= 0 && m_arWidgetStack[m_nStackCount] == FE_WindowID::E_NONE)
+	{
+		m_nStackCount--;
+	}*/
 	/* 함수 리뉴얼 과정에서 잠시 보류 중인 코드
 	pWidget->MarkAsGarbage(); => endplay?
 	*/
@@ -129,3 +143,52 @@ void UC_WidgetMGR::E_RemoveWidget(UW_WindowBase* pWidget)
 	if (pWidget)
 		pWidget->RemoveFromParent();
 }
+
+void UC_WidgetMGR::E_SetFocus(FE_WindowID eWindowID)
+{
+	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
+	int nTargetIndex = pWidgetData->nStackIndedx;
+	FE_WindowID eID{};
+	for (int i = nTargetIndex; i  < m_nStackCount; i++)
+	{
+		m_arWidgetStack[nTargetIndex] = m_arWidgetStack[nTargetIndex + 1];
+	}
+	m_arWidgetStack[m_nStackCount] = eWindowID;
+	pWidgetData->nStackIndedx = m_nStackCount;
+}
+
+bool UC_WidgetMGR::E_PushStack(FE_WindowID eWindowID)
+{
+	if (m_nStackCount >= (uint8)FE_WindowID::E_EnumMAX)
+		return false;
+	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
+	if (pWidgetData->bRegistered)
+	{
+		E_SetFocus(eWindowID);
+		return true;
+	}
+	m_nStackCount++;
+	pWidgetData->nStackIndedx = m_nStackCount;
+	m_arWidgetStack[m_nStackCount] = eWindowID;
+	return true;
+}
+
+void UC_WidgetMGR::E_PopStack(FE_WindowID eWindowID)
+{
+	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
+	if (!pWidgetData->bRegistered)
+		return;
+	m_arWidgetStack[pWidgetData->nStackIndedx] = FE_WindowID::E_NONE;
+	pWidgetData->nStackIndedx = 0;
+	while (m_nStackCount >= 0 && m_arWidgetStack[m_nStackCount] == FE_WindowID::E_NONE)
+	{
+		m_nStackCount--;
+	}
+	if (m_nStackCount < 0)
+		return;
+	pWidgetData = &m_arWidgetData[m_nStackCount];
+	if (!pWidgetData->pWidget)
+		return;
+	pWidgetData->pWidget->SetFocus();
+}
+

@@ -74,3 +74,4 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 Content/02_Data/Monster/Minions/Global/MaterialLayers/Wood/T_TreeBark_D.uasset
 Content/02_Data/Monster/Minions/Global/MaterialLayers/Wood/T_TreeBark_N.uasset
+Content/03_Map/HeightMap/Texture/*

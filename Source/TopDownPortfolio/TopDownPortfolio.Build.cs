@@ -8,10 +8,14 @@ public class TopDownPortfolio : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" , "UMG"
-		});
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" , "UMG",
+            "UnrealEd", "EditorFramework", "Landscape" , "Foliage","Slate", "SlateCore", "LandscapeEditor",//, "LandscapeEditorUtilities"
+        });
 
-
-        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+        if(Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
+        }
     }
+            
 }

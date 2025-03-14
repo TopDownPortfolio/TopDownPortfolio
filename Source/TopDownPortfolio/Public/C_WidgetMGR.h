@@ -68,6 +68,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void E_UnRegisterWidget(FE_WindowID eWindowID);
 
+	UFUNCTION(BlueprintPure)
+	bool E_CheckRegistered(FE_WindowID eWindowID);
 	void E_UnRegisterWidget();
 
 };

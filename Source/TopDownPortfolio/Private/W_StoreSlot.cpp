@@ -14,11 +14,13 @@ void UW_StoreSlot::E_UpdateSlot()
 	m_sRetailColor.G = 0.0f;
 	m_sRetailColor.B = 0.0f;
 	pSellingButton->SetVisibility(ESlateVisibility::HitTestInvisible);
+		pSellingButton->bIsEnabled = true;
 	if (m_nRetailCount >= m_sData.sRetailItem.nItemCount)
 	{
 		m_sRetailColor.G = 1.0f;
 		m_sRetailColor.B = 1.0f;
 		pSellingButton->SetVisibility(ESlateVisibility::Visible);
+		pSellingButton->bIsEnabled = false;
 	}
 }
 

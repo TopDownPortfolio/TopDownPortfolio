@@ -86,10 +86,10 @@ UW_WindowBase* UC_WidgetMGR::E_GetWidget(FE_WindowID eWindowID)
 void UC_WidgetMGR::E_RegisterWidget(FE_WindowID eWindowID)
 {
 	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
-	UW_WindowBase* pRefWidget = pWidgetData->pWidget;
 	E_PushStack(eWindowID);
 	if (!pWidgetData->bRegistered)
 	{
+		UW_WindowBase* pRefWidget = pWidgetData->pWidget;
 		E_AddWidget(pRefWidget);
 		pWidgetData->bRegistered = true;
 	}
@@ -109,6 +109,11 @@ void UC_WidgetMGR::E_UnRegisterWidget(FE_WindowID eWindowID)
 		UW_WindowBase* pWidget = pWidgetData->pWidget;
 		E_RemoveWidget(pWidget);
 	}
+}
+
+bool UC_WidgetMGR::E_CheckRegistered(FE_WindowID eWindowID)
+{
+	return m_arWidgetData[(uint8)eWindowID].bRegistered;
 }
 
 void UC_WidgetMGR::E_UnRegisterWidget()
@@ -159,7 +164,7 @@ void UC_WidgetMGR::E_SetFocus(FE_WindowID eWindowID)
 
 bool UC_WidgetMGR::E_PushStack(FE_WindowID eWindowID)
 {
-	if (m_nStackCount >= (uint8)FE_WindowID::E_EnumMAX)
+	if (m_nStackCount  + 1 >= (uint8)FE_WindowID::E_EnumMAX)
 		return false;
 	S_WidgetData* pWidgetData = &m_arWidgetData[(uint8)eWindowID];
 	if (pWidgetData->bRegistered)

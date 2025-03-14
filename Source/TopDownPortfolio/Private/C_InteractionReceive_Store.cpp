@@ -27,7 +27,7 @@ bool UC_InteractionReceive_Store::E_EndEvent_Detect_Implementation(UPrimitiveCom
     if (m_pStoreWidget && m_pStore)
     {
         m_pStore->E_EraseStroeWidget( m_pStoreWidget->E_GetScrollBox());
-        m_pWidgetMGR->E_UnRegisterWidget(FE_WindowID::E_Inventory);
+        //m_pWidgetMGR->E_UnRegisterWidget(FE_WindowID::E_Inventory);
         m_pWidgetMGR->E_UnRegisterWidget(FE_WindowID::E_ItemStore);
         return true;
     }
@@ -47,8 +47,10 @@ bool UC_InteractionReceive_Store::E_InteractionEvent_Implementation(AActor* pIni
     if (!m_pStoreWidget)
         return false;
     m_pStore->E_AddToStoreWidget(m_pStoreWidget->E_GetScrollBox(), pController);
-    m_pWidgetMGR->E_RegisterWidget(FE_WindowID::E_Inventory);
-    m_pWidgetMGR->E_RegisterWidget(FE_WindowID::E_ItemStore);
+    if (!m_pWidgetMGR->E_CheckRegistered(FE_WindowID::E_Inventory))
+        m_pWidgetMGR->E_RegisterWidget(FE_WindowID::E_Inventory);
+    if (!m_pWidgetMGR->E_CheckRegistered(FE_WindowID::E_ItemStore))
+        m_pWidgetMGR->E_RegisterWidget(FE_WindowID::E_ItemStore);
 
     return true;
 }

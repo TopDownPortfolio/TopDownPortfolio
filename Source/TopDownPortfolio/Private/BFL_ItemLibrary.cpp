@@ -35,6 +35,15 @@ void UBFL_ItemLibrary::E_GetItemFlag(const UObject* WorldContextObject, FE_ItemT
 	nItemFlag = pInstance->E_GetItemFlag(eItemType, nItemID);
 }
 
+bool UBFL_ItemLibrary::E_GetCheckItemFlag(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, FE_ItemManageabilityFlag eFlag)
+{
+	UC_ItemDataTable* pInstance = E_GetItemDataTable(WorldContextObject);
+	if (!pInstance)
+		return false;
+	uint8 nItemFlag = pInstance->E_GetItemFlag(eItemType, nItemID);
+	return nItemFlag & (uint8)eFlag;
+}
+
 void UBFL_ItemLibrary::E_GetItemTexture(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, UTexture2D*& pItemTexture)
 {
 	UC_ItemDataTable* pInstance = E_GetItemDataTable(WorldContextObject);

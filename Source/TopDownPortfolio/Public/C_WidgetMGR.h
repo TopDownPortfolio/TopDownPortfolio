@@ -28,18 +28,19 @@ protected:
 	struct S_WidgetData
 	{
 		UW_WindowBase* pWidget;
+		int nStackIndedx;
 		bool bRegistered;
 	};
 private:
 	APlayerController* m_pController;
 	UW_WindowBase* m_pMain;
 	UPanelWidget* m_pMainPanel;
+	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WidgetMGR)
 	UDataTable* m_pDataTable;
 	TMap<FE_WindowID, const FS_WindowClassData*> m_mapWindow;
 private:
-	S_WidgetData m_arWidgetData[(uint8)FE_WindowID::E_EnumMAX];
 	FE_WindowID m_arWidgetStack[(uint8)FE_WindowID::E_EnumMAX];
 	int m_nStackCount;
 public:	
@@ -55,13 +56,18 @@ protected:
 	void E_Register(FE_WindowID eWindowID, UW_WindowBase* pWidget);
 	void E_AddWidget(UW_WindowBase* pWidget);
 	void E_RemoveWidget(UW_WindowBase* pWidget);
-public:	
-	UFUNCTION(BlueprintPure)
 
+	bool E_PushStack(FE_WindowID eWindowID);
+	void E_PopStack(FE_WindowID eWindowID);
+public:	
+	void E_SetFocus(FE_WindowID eWindowID);
+	UFUNCTION(BlueprintPure)
 	UW_WindowBase* E_GetWidget(FE_WindowID eWindowID);
 	UFUNCTION(BlueprintCallable)
 	void E_RegisterWidget(FE_WindowID eWindowID);
 	UFUNCTION(BlueprintCallable)
+	void E_UnRegisterWidget(FE_WindowID eWindowID);
+
 	void E_UnRegisterWidget();
 
 };

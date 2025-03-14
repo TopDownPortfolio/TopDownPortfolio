@@ -30,6 +30,7 @@ enum class FE_ItemManageabilityFlag: uint8
 	E_Sellable			= (1 << 0),
 	E_Dismantlable		= (1 << 1),
 	E_Destroyable		= (1 << 2),
+	E_Bundlable			= (1 << 3),
 };
 
 UENUM(BlueprintType)

@@ -22,6 +22,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "ItemData")
 	static void E_GetItemFlag(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, uint8& nItemFlag);
 	UFUNCTION(BlueprintPure, Category = "ItemData")
+	static bool E_GetCheckItemFlag(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, FE_ItemManageabilityFlag eFlag);
+	UFUNCTION(BlueprintPure, Category = "ItemData")
 	static void  E_GetItemTexture(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, UTexture2D*& pItemTexture);
 	UFUNCTION(BlueprintPure, Category = "ItemData")
 	static void E_GetItemStaticMesh(const UObject* WorldContextObject, FE_ItemType eItemType, int nItemID, UStaticMesh*& pItemStaticMesh);

@@ -30,5 +30,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int nIndex;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* pMontage;
+	TSoftObjectPtr<	UAnimMontage> pMontage;
 };

@@ -10,6 +10,7 @@ enum class FE_WindowID: uint8
 	E_Inventory,
 	E_PlayerActionBar,
 	E_MonsterActionBar,
+	E_ItemStore,
 	E_EnumMAX UMETA(Hidden),
 };
 
@@ -22,3 +23,4 @@ enum class FE_WindowSetting : uint8
 	E_WidgetSize,
 	E_EnumMax UMETA(Hidden),
 };
+// unreal enumclass 툴팁 : UMETA(DisplayName = "최소 Anchor", ToolTip = "위젯의 최소 Anchor 설정"),

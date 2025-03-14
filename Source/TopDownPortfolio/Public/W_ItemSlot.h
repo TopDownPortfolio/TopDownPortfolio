@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "E_Item.h"
+#include "S_Item.h"
 #include "W_ItemSlot.generated.h"
 
 class UC_Inventory;
@@ -12,34 +12,31 @@ UCLASS()
 class TOPDOWNPORTFOLIO_API UW_ItemSlot : public UUserWidget
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Item")
+protected:
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	AA_PlayerController* m_pPlayer;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Item")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Item", meta = (AllowPrivateAccess = "true"))
 	UC_Inventory* m_pInventory;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Item", meta = (ClampMin = "0"))
-	int m_nItemID;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Item")
-	int m_nItemCount;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Item", meta = (ExposeOnSpawn = "TRUE"))
-	FE_ItemType m_eItemType;
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Item", meta = (ClampMin = "0", ExposeOnSpawn = "TRUE"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Item", meta = (AllowPrivateAccess = "true"))
+	FS_ItemInstanceData m_sItemInstanceData;
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item", meta = (ClampMin = "0", AllowPrivateAccess = "true"))
 	int m_nIndexY;
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Item", meta = (ClampMin = "0", ExposeOnSpawn = "TRUE"))
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item", meta = (ClampMin = "0", AllowPrivateAccess = "true"))
 	int m_nIndexX;
 public:
 	UW_ItemSlot(const FObjectInitializer& ObjectInitializer);
 
-	void E_SetItemID(int nItemID, int nItemCount);
+	FE_ItemType E_GetItemType() { return m_sItemInstanceData.eItemType; }
+	int E_GetItemID() { return m_sItemInstanceData.nItemID; }
+	int E_GetSlotIndexX() { return m_nIndexX; }
+	int E_GetSlotIndexY() { return m_nIndexY; }
+	void E_UpdateItem();
 	UFUNCTION(BlueprintPure)
 	int E_GetSlotIndex();
 	UFUNCTION(BlueprintImplementableEvent)
 	void E_RsetWidget();
-	void E_RsetWidget_Implementation() {}
-	bool E_Switch(UW_ItemSlot* pDst);
+	void E_InitItemSlot(FE_ItemType eItemType, int nIndexY, int nIndexX);
 protected:
 	virtual void NativeOnInitialized() override;
-
-private:
+	void E_RsetWidget_Implementation() {}
 };

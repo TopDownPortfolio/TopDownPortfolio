@@ -1,8 +1,8 @@
 # 🎮 Unreal Game Project
 
 ## 📌 Introduction
-Unreal Engine을 사용하여 개발하는 게임 프로젝트입니다.
-
+Unreal Engine을 사용하여 개발하는 탑뷰 게임 프로젝트입니다.
+노션 url : https://www.notion.so/Tasks-List-197d80a0c51480b194d1f36fc67d00ba?pvs=4
 ## 📂 Project Structure
 ```text
 📦 ProjectRoot
@@ -24,11 +24,7 @@ Git
 Build & Run
 
 ## 🎯 Features
-주요 기능 1
 
-주요 기능 2
-
-주요 기능 3
 
 
 ## 📌 Commit Message Convention
@@ -47,7 +43,7 @@ git commit -m "feature: 플레이어 점프 기능 추가"
 ```
 
 ## 📞 Contact
-개발자: 짱돌
+개발자: 이은구
 
-이메일: 
+이메일: skysea6055@gmail.com
 

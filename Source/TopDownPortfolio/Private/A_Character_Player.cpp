@@ -13,6 +13,7 @@ AA_Character_Player::AA_Character_Player() :
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	
 	E_Init_Pawn();
@@ -64,7 +65,7 @@ void AA_Character_Player::E_Init_CameraBoom()
 {
 	USpringArmComponent* pCameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	m_pCameraBoom = pCameraBoom;
-	pCameraBoom->SetupAttachment(RootComponent);
+	pCameraBoom->SetupAttachment(GetRootComponent());
 	pCameraBoom->SetUsingAbsoluteRotation(true);
 	pCameraBoom->TargetArmLength = 1300.f;
 	pCameraBoom->SetRelativeRotation(FRotator(-50.f, 0.f, 0.f));

@@ -11,7 +11,6 @@ AA_Character_Base::AA_Character_Base() :
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
-
 	m_pMontageMGR = CreateDefaultSubobject<UC_MontageMGR>("MontageMGR");
 	m_pStatusMGR = CreateDefaultSubobject<UC_StatusMGR>("StatusMGR");
 	m_pAttackMGR = CreateDefaultSubobject<UC_AttackMGR>("AttackMGR");

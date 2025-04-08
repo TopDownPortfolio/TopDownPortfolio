@@ -5,6 +5,7 @@
 #include "A_Character_Monster.generated.h"
 
 class UC_AIActionMGR;
+class UC_ItemSpawner;
 
 UCLASS()
 class TOPDOWNPORTFOLIO_API AA_Character_Monster : public AA_Character_Base
@@ -13,6 +14,8 @@ class TOPDOWNPORTFOLIO_API AA_Character_Monster : public AA_Character_Base
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AIActionMGR, meta = (AllowPrivateAccess = "true"))
 	UC_AIActionMGR* m_pAIAction;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemSpawner, meta = (AllowPrivateAccess = "true"))
+	UC_ItemSpawner* m_pItemSpawn;
 protected:
 	void E_Dead();
 
